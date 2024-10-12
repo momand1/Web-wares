@@ -70,10 +70,17 @@ export default new Vuex.Store({
       }
     ],
    
-    cart: [],            // Array to hold products added to cart
+    cart: [],
+    isLoggedIn: true,           
    
   },
   mutations: { //mutations is for making changes in state
+    LOGIN(state) {
+      state.isLoggedIn = true;
+    },
+    LOGOUT(state) {
+      state.isLoggedIn = false;
+    },
     ADD_TO_CART(state, product) {
       // state.cart.push(product);
       const cartItem = state.cart.find(item => item.id === product.id);
@@ -86,6 +93,15 @@ export default new Vuex.Store({
  
   },
   actions: { //actions is for making asynchronous changes in state such as fetching data from an API
+    login({ commit }) {
+      commit('LOGIN');
+    },
+    logout({ commit }) {
+      commit('LOGOUT');
+    },
+    addToCart({ commit }, product) {
+      commit('ADD_TO_CART', product);
+    }
   },
   getters: { //getters is for getting data from state
     produits: state => state.produits,
