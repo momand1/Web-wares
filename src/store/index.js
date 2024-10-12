@@ -1,16 +1,12 @@
-import Vue from 'vue';
 import Vuex from 'vuex';
-
-Vue.use(Vuex);
-
 export default new Vuex.Store({
-  state: {
-    categories: [
-      { id: 1, name: 'Mobilier d\'intérieur' },
-      { id: 2, name: 'Luminaires' },
-      { id: 3, name: 'Tapis' },
-      { id: 4, name: 'Objets de décorations' }
-    ],
+  state: { //state is for getting data from the store 
+    // categories: [
+    //   { id: 1, name: 'Mobilier d\'intérieur' },
+    //   { id: 2, name: 'Luminaires' },
+    //   { id: 3, name: 'Tapis' },
+    //   { id: 4, name: 'Objets de décorations' }
+    // ],
     produits: [
       {
         id: 1,
@@ -73,83 +69,28 @@ export default new Vuex.Store({
         role: 'ADMIN'
       }
     ],
-    loggedInUser: null,  // Tracks the currently logged-in user
+   
     cart: [],            // Array to hold products added to cart
-    commandes: [],
-    taxRate: 0.2
+   
   },
-  mutations: {
-    SET_USER(state, user) {
-      state.loggedInUser = user;
-    },
-    LOGOUT(state) {
-      state.loggedInUser = null;
-    },
+  mutations: { //mutations is for making changes in state
     ADD_TO_CART(state, product) {
+      // state.cart.push(product);
       const cartItem = state.cart.find(item => item.id === product.id);
       if (cartItem) {
-        cartItem.quantite += product.moq;
+        cartItem.quantite += 1;
       } else {
-        state.cart.push({ ...product, quantite: product.moq });
-      }
+        state.cart.push({ ...product, quantite: 1 });
+      } //if the item is already in the cart, increase the quantity by 1 else add the item to the cart
     },
-    REMOVE_FROM_CART(state, productId) {
-      state.cart = state.cart.filter(item => item.id !== productId);
-    },
-    PLACE_ORDER(state, order) {
-      state.commandes.push(order);
-      state.cart = [];  // Clear cart after placing an order
-    },
-    UPDATE_QUANTITY(state, { productId, quantity }) {
-      const cartItem = state.cart.find(item => item.id === productId);
-      if (cartItem) {
-        cartItem.quantite = quantity;
-      }
-    }
+ 
   },
-  actions: {
-    login({ commit, state }, { email, password }) {
-      const user = state.utilisateurs.find(
-        u => u.email === email && u.motDePasse === password
-      );
-      if (user) {
-        commit('SET_USER', user);
-        return true;
-      }
-      return false;
-    },
-    logout({ commit }) {
-      commit('LOGOUT');
-    },
-    addToCart({ commit }, product) {
-      commit('ADD_TO_CART', product);
-    },
-    removeFromCart({ commit }, productId) {
-      commit('REMOVE_FROM_CART', productId);
-    },
-    placeOrder({ commit, state }, deliveryInfo) {
-      const order = {
-        id: state.commandes.length + 1,
-        produits: state.cart,
-        coutTotal: state.cart.reduce((total, item) => total + item.prix * item.quantite, 0),
-        deliveryInfo,
-        userId: state.loggedInUser.id
-      };
-      commit('PLACE_ORDER', order);
-    },
-    updateQuantity({ commit }, { productId, quantity }) {
-      commit('UPDATE_QUANTITY', { productId, quantity });
-    }
+  actions: { //actions is for making asynchronous changes in state such as fetching data from an API
   },
-  getters: {
-    isLoggedIn: state => !!state.loggedInUser,
-    cartTotal: state => state.cart.reduce((total, item) => total + item.prix * item.quantite, 0),
-    totalItemsInCart: state => state.cart.reduce((sum, item) => sum + item.quantite, 0),
-    totalHT(state) {
-      return state.cart.reduce((total, item) => total + item.prix * item.quantite, 0);
-    },
-    totalTTC(state, getters) {
-      return getters.totalHT * (1 + state.taxRate);
+  getters: { //getters is for getting data from state
+    produits: state => state.produits,
+    totalItemsInCart(state) {
+      return state.cart.reduce((sum, item) => sum + item.quantite, 0); //this will return the total number of items in the cart
     }
   }
 });
