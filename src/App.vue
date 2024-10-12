@@ -1,12 +1,18 @@
 <template>
-  <div>
+  <div id="app">
     <nav>
-      <router-link to="/home">Home</router-link>
-      <router-link to="/products">Products</router-link>
-      <router-link to="/cart">Cart</router-link>
+      <ul>
+        <li><router-link to="/">Accueil</router-link></li>
+        <li><router-link to="/products">Produits</router-link></li>
+        <li><router-link to="/cart">Panier</router-link></li>
+        <li><router-link to="/checkout">Caisse</router-link></li>
+        <li><router-link to="/signup">Inscription</router-link></li>
+        <li><router-link to="/login">Connexion</router-link></li>
+        <li><router-link to="/admin">Admin</router-link></li>
+      </ul>
     </nav>
+    <router-view></router-view> <!-- This is where the page content will be rendered -->
   </div>
-  <router-view></router-view>
 </template>
 
 <script>
@@ -14,15 +20,3 @@ export default {
   name: 'App',
 };
 </script>
-
-<style scoped>
-nav {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  height: 60px;
-  background-color: #f5f5f5;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-  
-}
-</style>
