@@ -1,5 +1,10 @@
 <template>
     <div>
-      <h1>Product List</h1>
+      <h1>Nos Produits</h1>
+      <!-- Search bar -->
+
+      <!-- Product list -->
+       
+
     </div>
   </template>

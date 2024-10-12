@@ -4,6 +4,7 @@
       <ul>
         <li><router-link to="/">Accueil</router-link></li>
         <li><router-link to="/products">Produits</router-link></li>
+        <li><router-link to="/ProductDetails">Details de Produits</router-link></li>
         <li><router-link to="/cart">Panier</router-link></li>
         <li><router-link to="/checkout">Caisse</router-link></li>
         <li><router-link to="/signup">Inscription</router-link></li>
