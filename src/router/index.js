@@ -1,24 +1,16 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import Produits from '../views/List-Produits.vue'
+import { createRouter, createWebHistory } from 'vue-router';
+import LandingPage from '@/views/LandingPage.vue';
+
 
 const routes = [
-  {
-    path: '/',
-    name: 'home',
-    component: HomeView
-  },
-  {
-    path: '/Produits',
-    name: 'Produits',
-    components: Produits
-  },
-  
-]
+
+  { path: '/', component: LandingPage },
+
+];
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
-})
+});
 
-export default router
+export default router;

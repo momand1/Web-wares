@@ -1,10 +1,10 @@
-import { createApp } from 'vue'
-import App from './App.vue'
-import router from './router'
-import store from './store'
-import Vue from 'vue'
-import Vuex from 'vuex'
+import { createApp } from 'vue';
+import App from './App.vue';
+import store from './store';  // Vuex store
+import router from './router';  // Vue Router
 
-
-
-createApp(App).use(Vuex, Vue).use(store).use(router).mount('#app')
+// Create the app instance and inject store and router
+createApp(App)
+  .use(store)
+  .use(router)
+  .mount('#app');  // Mount the app to the #app div
