@@ -22,7 +22,7 @@ export default {
   name: 'App',
   data() {
     return {
-      menuActive: false,
+      menuActive: false, //this is for when
     };
   },
   methods: {

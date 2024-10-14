@@ -8,7 +8,11 @@
         <div>
           <h3>{{ item.titre }}</h3>
           <p>{{ item.prix }}€</p>
-          <p>Quantité: {{ item.quantity }}</p>
+          <p>Quantité: 
+            <button @click="decrementQuantity(item.id)">-</button> 
+            {{ item.quantity }} 
+            <button @click="incrementQuantity(item.id)">+</button>
+          </p>
           <button @click="removeFromCart(item.id)">Retirer</button>
         </div>
       </div>
@@ -25,7 +29,14 @@ export default {
     ...mapGetters(['cartItems']),
   },
   methods: {
-    ...mapMutations(['REMOVE_FROM_CART']),
+    ...mapMutations(['INCREMENT_QUANTITY', 'DECREMENT_QUANTITY', 'REMOVE_FROM_CART']),
+
+    incrementQuantity(productID) {
+      this.INCREMENT_QUANTITY(productID);
+    },
+    decrementQuantity(productID) {
+      this.DECREMENT_QUANTITY(productID);
+    },
     removeFromCart(productID) {
       this.REMOVE_FROM_CART(productID);
     }

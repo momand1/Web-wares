@@ -96,7 +96,21 @@ export default new Vuex.Store({
     },
     REMOVE_FROM_CART(state, productID) {
       state.cart = state.cart.filter(item => item.id !== productID);
-    }
+    },
+    INCREMENT_QUANTITY(state, productID) {
+      const item = state.cart.find(item => item.id === productID);
+      if (item) {
+        item.quantity += 1;
+      }
+    },
+    DECREMENT_QUANTITY(state, productID) {
+      const item = state.cart.find(item => item.id === productID);
+      if (item && item.quantity > 1) {
+        item.quantity -= 1;
+      } else {
+        state.cart = state.cart.filter(item => item.id !== productID);
+      }
+    },
  
   },
   actions: { //actions is for making asynchronous changes in state such as fetching data from an API
@@ -113,15 +127,15 @@ export default new Vuex.Store({
   getters: { //getters is for getting data from state
     produits: state => state.produits,
     totalItemsInCart(state) {
-      return state.cart.reduce((sum, item) => sum + item.quantite, 0); //this will return the total number of items in the cart
+      return state.cart.reduce((sum, item) => sum + item.quantity, 0); //this will return the total number of items in the cart
     },
     cartItems(state) {
       return state.cart;
     },
     totalCartPrice(state) {
       return state.cart.reduce((total, item) => {
-        return total + (item.prix * item.quantite);
-      } , 0);
+        return total + (item.prix * item.quantity);
+      }, 0).toFixed(2);
     }
   }
 });
