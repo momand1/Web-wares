@@ -13,14 +13,15 @@
 </template>
 
 <script>
-    import { mapState } from 'vuex';
+    import { mapState} from 'vuex';
     export default {
         // name: 'ProductCard',
 
         props: {
             product: {
                 type: Object,
-                required: true
+                required: true,
+                // cart: []
             }
         },
 
@@ -30,8 +31,10 @@
 
         methods: {
             addToCart(product) {
-                this.$store.dispatch('addToCart', product); //emit is for transfering added product to cart 
-            }
+                this.$store.dispatch('addToCart', product); 
+            },
+
+            // ...mapMutations(['ADD_TO_CART'])
         },
 
 

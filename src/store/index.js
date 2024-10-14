@@ -1,12 +1,12 @@
 import Vuex from 'vuex';
 export default new Vuex.Store({
   state: { //state is for getting data from the store 
-    // categories: [
-    //   { id: 1, name: 'Mobilier d\'intérieur' },
-    //   { id: 2, name: 'Luminaires' },
-    //   { id: 3, name: 'Tapis' },
-    //   { id: 4, name: 'Objets de décorations' }
-    // ],
+    categories: [
+      { id: 1, name: 'Mobilier d\'intérieur' },
+      { id: 2, name: 'Luminaires' },
+      { id: 3, name: 'Tapis' },
+      { id: 4, name: 'Objets de décorations' }
+    ],
     produits: [
       {
         id: 1,
@@ -71,7 +71,8 @@ export default new Vuex.Store({
     ],
    
     cart: [],
-    isLoggedIn: true,           
+    isLoggedIn: true,  
+    // cartItems: [],         
    
   },
   mutations: { //mutations is for making changes in state
@@ -83,13 +84,19 @@ export default new Vuex.Store({
     },
     ADD_TO_CART(state, product) {
       // state.cart.push(product);
-      const cartItem = state.cart.find(item => item.id === product.id);
-      if (cartItem) {
-        cartItem.quantite += 1;
+      const itemInCart = state.cart.find(item => item.id === product.id);
+      if (itemInCart) {
+        itemInCart.quantity += 1;
       } else {
-        state.cart.push({ ...product, quantite: 1 });
+        state.cart.push({ ...product, quantity: 1 });
       } //if the item is already in the cart, increase the quantity by 1 else add the item to the cart
+      // console.log(state.cartItems);
+      console.log('Cart Items in veux store:', state.cartItems); // Log to verify
+
     },
+    REMOVE_FROM_CART(state, productID) {
+      state.cart = state.cart.filter(item => item.id !== productID);
+    }
  
   },
   actions: { //actions is for making asynchronous changes in state such as fetching data from an API
@@ -107,6 +114,14 @@ export default new Vuex.Store({
     produits: state => state.produits,
     totalItemsInCart(state) {
       return state.cart.reduce((sum, item) => sum + item.quantite, 0); //this will return the total number of items in the cart
+    },
+    cartItems(state) {
+      return state.cart;
+    },
+    totalCartPrice(state) {
+      return state.cart.reduce((total, item) => {
+        return total + (item.prix * item.quantite);
+      } , 0);
     }
   }
 });

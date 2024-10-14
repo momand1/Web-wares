@@ -33,7 +33,8 @@
   export default {
     components: {
       SearchBar,
-      ProductCard
+      ProductCard,
+      
   
     },
     data() {
