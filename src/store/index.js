@@ -102,7 +102,7 @@ state: {
     },
     cartItems: state => state.cart,
     cartTotalHT: state => {
-      return state.cart.reduce((total, item) => total + item.priceHT * item.quantity, 0).toFixed(2);
+      return state.cart.reduce((total, item) => total + item.prix * item.quantite, 0).toFixed(2);
     },
     cartTotalTTC: (state, getters) => {
       const taxRate = 1.20; // Taxe de 20%

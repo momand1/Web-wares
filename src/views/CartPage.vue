@@ -1,17 +1,15 @@
 <!-- src/views/CartPage.vue -->
 <template>
-  <div class="cart-page">
-    <h1>Mon Panier</h1>
-
-    <!-- Afficher les produits du panier -->
-    <table v-if="cartItems.length > 0">
-      <thead>
+  <div class="container mt-5">
+    <h1 class="mb-4">Mon Panier</h1>
+    <table class="table table-striped" v-if="cartItems.length > 0">
+      <thead class="thead-dark">
         <tr>
-          <th>Produit</th>
-          <th>Quantité</th>
-          <th>Prix HT</th>
-          <th>Total HT</th>
-          <th>Actions</th>
+          <th scope="col">Produit</th>
+          <th scope="col">Quantité</th>
+          <th scope="col">Prix HT</th>
+          <th scope="col">Total HT</th>
+          <th scope="col">Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -24,12 +22,8 @@
       </tbody>
     </table>
 
-    <!-- Si le panier est vide -->
-    <div v-else>
-      <p>Votre panier est vide.</p>
-    </div>
+    <div v-else class="alert alert-info">Votre panier est vide.</div>
 
-    <!-- Afficher le résumé du panier si des articles sont présents -->
     <CartSummary v-if="cartItems.length > 0" :totalHT="cartTotalHT" :totalTTC="cartTotalTTC" @checkout="checkout" />
   </div>
 </template>
@@ -61,18 +55,65 @@ export default {
 </script>
 
 <style scoped>
+/* Style de la page du panier */
 .cart-page {
-  margin: 20px;
+  margin: 40px auto;
+  max-width: 900px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
 }
+
+/* Style pour la table des articles */
 table {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 20px;
 }
-th, td {
-  padding: 10px;
-  border: 1px solid #ccc;
+
+table th, table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Style pour l'en-tête des colonnes */
+table th {
+  background-color: #f2f2f2;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Style des cellules */
+table td {
+  color: #666;
+}
+
+/* Bouton pour retirer un produit */
+button {
+  background-color: #e74c3c;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  cursor: pointer;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #c0392b;
+}
+
+/* Style pour le texte "Panier vide" */
+.cart-empty {
+  text-align: center;
+  color: #999;
+  font-size: 18px;
+  margin-top: 20px;
 }
 </style>
+
 
 
