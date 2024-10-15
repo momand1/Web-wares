@@ -1,11 +1,9 @@
 <!-- src/components/OrderSummary.vue -->
 <template>
-  <div class="order-summary">
+  <div class="cart-summary">
     <p><strong>Total HT :</strong> {{ totalHT }} €</p>
     <p><strong>Total TTC :</strong> {{ totalTTC }} €</p>
-    <router-link to="/CheckoutPage">
-      <button>Voir le résumé du panier</button>
-    </router-link>
+    <button @click="checkout">Passer à la caisse</button>
   </div>
 </template>
 
@@ -20,13 +18,26 @@ export default {
       type: Number,
       required: true
     }
+  },
+  methods: {
+    checkout() {
+      this.$emit('checkout');
+    }
   }
 };
 </script>
 
 <style scoped>
-.order-summary {
+.cart-summary {
   margin-top: 20px;
 }
+button {
+  background-color: green;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  cursor: pointer;
+}
 </style>
+
 
