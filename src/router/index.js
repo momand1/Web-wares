@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router';
 import LandingPage from '@/views/LandingPage.vue';
 import ProductsListPage from '@/views/ProductList.vue';
 import ProductDetails from '@/views/ProductDetails.vue';
+
 import CartPage from '@/views/CartPage.vue';
 import CheckoutPage from '@/views/CheckoutPage.vue';
 import SignupPage from '@/views/SignupPage.vue';
