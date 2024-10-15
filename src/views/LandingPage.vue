@@ -1,39 +1,27 @@
 <template>
-  <footer class="footer">
+  <section class="services-section">
     <div class="container">
-      <div class="footer-links">
-        <div class="column">
-          <h5>Liens légaux</h5>
-          <ul>
-            <li><a href="#">Mentions légales</a></li>
-            <li><a href="#">Politique de confidentialité</a></li>
-            <li><a href="#">Conditions d'utilisation</a></li>
-          </ul>
+      <h2 class="services-title">Nos services</h2>
+      <div class="services">
+        <div class="service-item">
+          <img src="../assets/fast-delivery.png" alt="Retour gratuits logo" class="service-logo">
+          <p>Livraisons <strong>rapides et gratuites</strong></p>
         </div>
-        <div class="column">
-          <h5>Réseaux sociaux</h5>
-          <ul>
-            <li><a href="#">Facebook</a></li>
-            <li><a href="#">LinkedIn</a></li>
-            <li><a href="#">Twitter</a></li>
-          </ul>
+        <div class="service-item">
+          <img src="../assets/30.png" alt="Retours sous 30 jours logo" class="service-logo">
+          <p>Retours sous <strong>30 jours</strong></p>
         </div>
-        <div class="column">
-          <h5>Moyens de paiement</h5>
-          <img src="https://via.placeholder.com/150" alt="Logos des moyens de paiement" />
-          <h5>Inscription à la newsletter</h5>
-          <form @submit.prevent="subscribe">
-            <input type="email" placeholder="Votre email" required>
-            <button type="submit">Je m'inscris</button>
-          </form>
+        <div class="service-item">
+          <img src="../assets/payer.png" alt="Mode de paiement logo" class="service-logo">
+          <p>Vous avez le choix du <strong>mode de paiement</strong></p>
         </div>
       </div>
-      <div class="footer-bottom">
-        <p>&copy; 2024 Mon Entreprise. Tous droits réservés.</p>
-      </div>
+      <p class="more-info"><a href="#">Je découvre les engagements Web Wares &rsaquo;</a></p>
     </div>
-  </footer>
+  </section>
+
 </template>
+
 
 <script>
 export default {
@@ -46,53 +34,52 @@ export default {
 </script>
 
 <style scoped>
-.footer {
+
+.services-section {
   background-color: #f1f1f1;
-  padding: 20px;
+  padding: 30px 0;
   text-align: center;
 }
 
 .container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.services-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+
+.services {
   display: flex;
-  flex-direction: column;
+  justify-content: space-around;
   align-items: center;
 }
 
-.footer-links {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  max-width: 1200px;
+.service-item {
+  width: 30%;
 }
 
-.column {
-  flex: 1;
-  margin: 10px;
+.service-logo {
+  display: block;
+  margin: 0 auto 10px;
+  width: 80px; 
+  height: 80px; 
 }
 
-h5 {
-  margin-bottom: 10px;
+.more-info {
+  margin-top: 20px;
+  font-size: 14px;
 }
 
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-ul li {
-  margin: 5px 0;
-}
-
-a {
+.more-info a {
   text-decoration: none;
   color: #333;
 }
 
-a:hover {
+.more-info a:hover {
   text-decoration: underline;
-}
-
-.footer-bottom {
-  margin-top: 20px;
 }
 </style>
