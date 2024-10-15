@@ -1,6 +1,9 @@
 import Vuex from 'vuex';
+
+
 export default new Vuex.Store({
-  state: { //state is for getting data from the store 
+state: {
+   //state is for getting data from the store 
     // categories: [
     //   { id: 1, name: 'Mobilier d\'intérieur' },
     //   { id: 2, name: 'Luminaires' },
@@ -83,7 +86,12 @@ export default new Vuex.Store({
         state.cart.push({ ...product, quantite: 1 });
       } //if the item is already in the cart, increase the quantity by 1 else add the item to the cart
     },
- 
+    REMOVE_FROM_CART(state, productId) {
+      state.cart = state.cart.filter(item => item.id !== productId);
+    },
+    CLEAR_CART(state) {
+      state.cart = [];
+    }
   },
   actions: { //actions is for making asynchronous changes in state such as fetching data from an API
   },
@@ -91,6 +99,14 @@ export default new Vuex.Store({
     produits: state => state.produits,
     totalItemsInCart(state) {
       return state.cart.reduce((sum, item) => sum + item.quantite, 0); //this will return the total number of items in the cart
+    },
+    cartItems: state => state.cart,
+    cartTotalHT: state => {
+      return state.cart.reduce((total, item) => total + item.priceHT * item.quantity, 0).toFixed(2);
+    },
+    cartTotalTTC: (state, getters) => {
+      const taxRate = 1.20; // Taxe de 20%
+      return (getters.cartTotalHT * taxRate).toFixed(2);
     }
   }
 });

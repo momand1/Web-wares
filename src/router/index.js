@@ -15,8 +15,8 @@ const router = createRouter({
     { path: '/', component: LandingPage },
     { path: '/ProductsListPage', component: ProductsListPage },
     { path: '/ProductDetails', component: ProductDetails },
-    { path: '/cart', component: CartPage },
-    { path: '/checkout', component: CheckoutPage },
+    { path: '/CartPage', component: CartPage },
+    { path: '/CheckoutPage', component: CheckoutPage },
     { path: '/signup', component: SignupPage },
     { path: '/login', component: LoginPage },
     { path: '/admin', component: AdminDashboard }
