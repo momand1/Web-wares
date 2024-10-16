@@ -1,9 +1,9 @@
 <template>
   <tr>
     <td>{{ item.titre }}</td>
-    <td>{{ item.quantite }}</td>
+    <td>{{ item.quantity}}</td>
     <td>{{ item.prix }} €</td>
-    <td>{{ (item.prix * item.quantite).toFixed(2) }} €</td>
+    <td>{{ (item.prix * item.quantity).toFixed(2) }} €</td>
     <td>
       <button @click="removeFromCart(item.id)">Retirer</button>
     </td>

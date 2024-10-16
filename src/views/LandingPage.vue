@@ -1,54 +1,6 @@
 <template>
 
-<div class="text-end me-5 mb-4">
-      <div class="d-flex flex-column align-items-center">
-          <a href="/login"> <img src="../assets/user.png" alt="User Icon" class="icon"> </a>
-          <a href="/login" class="btn btn-link">Connexion</a>
-      </div>
-      <div class="d-flex flex-column align-items-center">
-         <a href="/signup"> <img src="../assets/signup.png" alt="Sign Up Icon" class="icon"> </a>
-          <a href="/signup" class="btn btn-link">Inscription</a>
-      </div>
-  </div>  
 
-  <!-- Code navbar -->
-    <nav class="navbar">
-      <div class="navbar-logo">
-        <router-link to="">
-          <img src="../assets/logo.png" alt="logo" class="logo ms-4">
-        </router-link>
-      </div>
-      <div class="navbar-container">
-        <!-- Logo -->
-  
-        <!-- Navigation Links -->
-        <ul class="navbar-links">
-          <li><router-link to="/">Accueil</router-link></li>
-          
-          <!-- Dropdown Menu -->
-          <li class="dropdown" @mouseenter="showDropdown = true" @mouseleave="showDropdown = false">
-            <span><router-link to="/ProductsListPage">Produits</router-link></span>
-            <ul v-if="showDropdown" class="dropdown-menu">
-              <li><router-link to="">Catégorie 1</router-link></li>
-              <li><router-link to="">Catégorie 2</router-link></li>
-              <li><router-link to="">Catégorie 3</router-link></li>
-              <li><router-link to="">Catégorie 4</router-link></li>
-            </ul>
-          </li>
-          <li><router-link to="/ProductDetails">Details de Produits</router-link></li>
-          <li><router-link to="/cart">Panier</router-link></li>
-          <li><router-link to="/checkout">Caisse</router-link></li>
-          <li><router-link to="/admin">Admin</router-link></li>
-        </ul>
-      </div>
-      <form class="d-flex me-4" role="search">
-              <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-              <button class="btn btn-info me-2" type="submit">Search</button>
-          </form>
-    </nav> 
-    <!-- Fin navbar -->
-  
-    
      <!-- Header -->
       <div class="row">
           <div class="col-12 text-center pt-3">
@@ -126,98 +78,16 @@
   </section>
   <br><br><br>
 
-<!-- Footer -->
-<footer class="footer">
-    <div class="container">
-      <!-- Newsletter Signup Section -->
-      <!-- <div class="newsletter">
-        <h5>Inscription à la newsletter</h5>
-        <form @submit.prevent="subscribe">
-          <input type="email" class="form-control mb-2" id="exampleFormControlInput1" placeholder="name@example.com" required>
-          <button type="submit">Je m'inscris</button>
-        </form>
-      </div> -->
 
-      <!-- Social Media, Payment Methods, and Delivery Methods Section -->
-      <div class="footer-links big-footer-bottom">
-        
-        <div class="column footer-top ">
-          <h5>Moyens de paiement</h5>
-          <ul>
-            <li> <img src="../assets/paiement/visa.png" alt="Visa" class="icon"> </li>
-            <li> <img src="../assets/paiement/applepay.png" alt="Apple Pay" class="icon ms-2 me-2"> </li>
-            <li> <img src="../assets/paiement/mastercard.png" alt="MasterCard" class="icon me-2"> </li>
-            <li> <img src="../assets/paiement/paypal.png" alt="PayPal" class="icon"> </li>
-          </ul>
-        </div>
-
-        <div class="column footer-top ms-5 me-5">
-          <h5>Suivez-nous sur les réseaux !</h5>
-          <ul>
-            <li>
-              <a href="#"> <img src="../assets/facebook.png" alt="logo facebook" class="logo"> </a>
-            </li>
-            <li>
-              <a href="#"> <img src="../assets/twitter.png" alt="logo twitter" class="logo ms-2 me-2"> </a>
-            </li>
-            <li>
-              <a href="#"> <img src="../assets/linkedin.png" alt="logo linkedin" class="logo"> </a>
-            </li>
-          </ul>
-        </div>
-        
-        <div class="column footer-top">
-          <h5>Moyens de livraison</h5>
-          <ul>
-            <li> <img src="../assets/dhl.png" alt="DHL" class="small"> </li>
-            <li> <img src="../assets/ups.png" alt="UPS" class="logo ms-2 me-2"> </li>
-            <li> <img src="../assets/fedex.png" alt="fedex" class="small"> </li>
-          </ul>
-        </div>
-      </div>
-
-      <!-- truspilot rating -->
-
-      <div class="banner-row row">
-    <!-- Trustpilot Column -->
-    <div class="trustpilot-column col-8">
-        <img src="../assets/trustpilot.png" alt="Trustpilot" class="truspilot">
-        <p> Nos clients adorent home24 et nous le disent : 
-            <strong>4,1 étoiles sur 5</strong> (8,372 avis clients)
-        </p>
-    </div>
-
-    <!-- App Store Column -->
-    <div class="app-store-column col-4">
-        <div class="app-icons">
-            <img src="../assets/app-store.png" alt="App Store" class="logo">
-            <img src="../assets/app.png" alt="Google Play" class="logo">
-            <p>Téléchargez l'appli home24</p>
-        </div>
-    </div>
-</div>
-
-<!-- fin truspilot -->
-
-      <!-- Legal Links Section -->
-      <div>
-        <h5>Liens légaux</h5>
-        <ul class="legal-links">
-          <li><a href="#">Mentions légales</a></li>
-          <li><a href="#">Politique de confidentialité</a></li>
-          <li><a href="#">Conditions d'utilisation</a></li>
-        </ul>
-        <p class="footer-bottom">&copy; 2024 Mon Entreprise. Tous droits réservés.</p>
-      </div>
-    </div>
-  </footer>
-
-  <!-- Fin footer -->
 </template>
 
 
 <script>
+
+
 export default {
+  name: 'LandingPage',
+ 
   methods: {
     subscribe() {
       alert('Inscription à la newsletter réussie !');
@@ -305,7 +175,7 @@ export default {
   }
   
   .container {
-      margin-top: 20px; /* Optional spacing */
+      margin-top: 20px; 
   }
   
   .equal-height {
@@ -348,11 +218,7 @@ export default {
     justify-content: center;
     padding: 10px 20px;
   }
-  /* .navbar-logo a {
-    color: #fff;
-    text-decoration: none;
-    font-size: 24px;
-  } */
+
   .navbar-links {
     list-style: none;
     display: flex;

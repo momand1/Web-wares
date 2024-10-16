@@ -3,7 +3,7 @@
   <div class="cart-summary">
     <p><strong>Total HT :</strong> {{ totalHT }} €</p>
     <p><strong>Total TTC :</strong> {{ totalTTC }} €</p>
-    <button @click="checkout">Confirmer</button>
+    <button @click="Checkout">Confirmer</button>
   </div>
 </template>
 

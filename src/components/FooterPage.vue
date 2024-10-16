@@ -66,6 +66,7 @@
 
 <script>
 export default {
+  name: 'FooterPage',
   methods: {
     subscribe() {
       alert('Inscription à la newsletter réussie !');
