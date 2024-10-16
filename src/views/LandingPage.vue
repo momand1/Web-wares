@@ -124,19 +124,54 @@
       <p class="more-info"><a href="#">Je découvre les engagements Web Wares &rsaquo;</a></p>
     </div>
   </section>
-  <br><br><br>
+  
+
+  <div class="contact-form">
+        <h2>Contactez nous !</h2>
+        <p>Veuillez remplir vos informations et nous vous enverrons votre commande en un rien de temps.</p>
+        <form action="submit_form.php" method="post">
+            <label for="name">Votre Nom*</label>
+            <div style="display: flex; gap: 10px;">
+                <input type="text" name="firstName" placeholder="Prénom" required>
+                <input type="text" name="lastName" placeholder="Nom de famille" required>
+            </div>
+
+            <label for="email">Votre Email*</label>
+            <input type="email" name="email" placeholder="helloworld@contact.net" required>
+
+            <label for="phone">Votre Adresse*</label>
+            <div style="display: flex; gap: 10px;">
+                <input type="text" name="areaCode" placeholder="Rue n°" required>
+                <input type="text" name="prefix" placeholder="Ville" required>
+                <input type="nomber" name="lineNumber" placeholder="Code Postal" required>
+            </div>
+
+            <label for="subject">Sujet du message*</label>
+            <select name="subject" required>
+              <option value="other">Autre</option>
+                <option value="order">Aide pour ma commande</option>
+                <option value="support">Retours et remboursements</option>
+                <option value="paiement">Paiements et questions générales</option>
+                <option value="gift">Vérifier le solde des cadeau et de la carte</option>
+                <option value="support">Service client</option>
+            </select>
+
+            <label for="message">Message*</label>
+            <textarea name="message" rows="4" required></textarea>
+
+            <div class="recaptcha-container">
+                <!-- Insert reCAPTCHA -->
+                <div class="g-recaptcha" data-sitekey="your-site-key"></div>
+            </div>
+
+            <button type="submit">Envoyer</button>
+        </form>
+    </div>
 
 <!-- Footer -->
 <footer class="footer">
     <div class="container">
-      <!-- Newsletter Signup Section -->
-      <!-- <div class="newsletter">
-        <h5>Inscription à la newsletter</h5>
-        <form @submit.prevent="subscribe">
-          <input type="email" class="form-control mb-2" id="exampleFormControlInput1" placeholder="name@example.com" required>
-          <button type="submit">Je m'inscris</button>
-        </form>
-      </div> -->
+
 
       <!-- Social Media, Payment Methods, and Delivery Methods Section -->
       <div class="footer-links big-footer-bottom">
@@ -178,24 +213,22 @@
 
       <!-- truspilot rating -->
 
-      <div class="banner-row row">
-    <!-- Trustpilot Column -->
-    <div class="trustpilot-column col-8">
-        <img src="../assets/trustpilot.png" alt="Trustpilot" class="truspilot">
-        <p> Nos clients adorent home24 et nous le disent : 
-            <strong>4,1 étoiles sur 5</strong> (8,372 avis clients)
-        </p>
-    </div>
-
-    <!-- App Store Column -->
-    <div class="app-store-column col-4">
-        <div class="app-icons">
-            <img src="../assets/app-store.png" alt="App Store" class="logo">
-            <img src="../assets/app.png" alt="Google Play" class="logo">
-            <p>Téléchargez l'appli home24</p>
+<div class="banner-row">
+        <!-- Trustpilot Column -->
+        <div class="trustpilot-column">
+            <img src="../assets/trustpilot.png" alt="Trustpilot" width="130" height="90" class="pb-3 pe-2">
+            <p><span>Nos clients adorent Web Wares et nous le disent :</span><br>
+              <strong>4,1 étoiles sur 5</strong> (8,372 avis clients)</p>
         </div>
+        <!-- App Store Column -->
+        <div class="app-column">
+            <a href="#"><img src="../assets/app-store.png" alt="App Store" width="40"></a>
+            <a href="#"><img src="../assets/app.png" alt="Google Play" width="40"></a>
+            <p>Téléchargez l'appli Web Wares</p>
+        </div>
+        
     </div>
-</div>
+    <br>
 
 <!-- fin truspilot -->
 
@@ -294,7 +327,7 @@ export default {
 }
 
   .icon {
-      width: 40px; /* Set the width of the icon */
+      width: 50px; /* Set the width of the icon */
       height: auto; /* Maintain aspect ratio */
       margin-bottom: 5px; /* Spacing between icon and text */
   }
@@ -600,41 +633,99 @@ img {
 
 /* Style pour banner truspilot */
 .banner-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #ccc;
-    padding: 15px 30px;
-    border-top: 1px solid #ddd;
-    border-bottom: 1px solid #ddd;
-}
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f0f0f0;
+            border-top: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+            width: 100%;
+            max-width: 100%;
+            margin: 0 auto;
+        }
 
-.truspilot {
-  width: 9vw;
-  height: 16vh;
-}
+        .trustpilot-column, .app-column {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
 
-.trustpilot-column {
-    display: flex;
-    align-items: center;
-}
+        .trustpilot-column img {
+            margin-right: 10px;
+        }
 
-.trustpilot-logo {
-    width: 20px; /* Adjust according to your needs */
-    margin-right: 10px;
-}
+        .app-column img {
+            margin-left: 10px;
+        }
 
-.app-store-column {
-    text-align: right;
-}
+        .app-column {
+            gap: 10px;
+        }
 
-.app-icons {
-    display: flex;
-    gap: 10px; /* Adjust the space between the app store icons */
-}
+        .banner-row p {
+            margin: 0;
+            font-size: 16px;
+            color: #333;
+        }
 
-.app-logo {
-    width: 100px; /* Adjust according to your needs */
-}
 
+/* contact form */
+body {
+            background: linear-gradient(to bottom right, #1e90ff, #00ced1);
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .contact-form {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            max-width: 800px; /* Maximum width of the form */
+            margin: 20px auto; /* Center the form with auto margins */
+        }
+
+        .contact-form h2 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .contact-form label {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .contact-form input, 
+        .contact-form textarea, 
+        .contact-form select {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .contact-form button {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #4198f0;
+            border: none;
+            color: white;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .contact-form button:hover {
+            background-color: #0d3972;
+        }
+        
+        .recaptcha-container {
+            margin-top: 15px;
+        }
 </style>
