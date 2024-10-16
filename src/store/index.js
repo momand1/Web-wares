@@ -1,6 +1,7 @@
 import Vuex from 'vuex';
+
 export default new Vuex.Store({
-  state: { //state is for getting data from the store 
+  state: { // state is for getting data from the store 
     categories: [
       { id: 1, name: 'Mobilier d\'intérieur' },
       { id: 2, name: 'Luminaires' },
@@ -69,13 +70,10 @@ export default new Vuex.Store({
         role: 'ADMIN'
       }
     ],
-   
     cart: [],
     isLoggedIn: true,  
-    // cartItems: [],         
-   
   },
-  mutations: { //mutations is for making changes in state
+  mutations: { // mutations is for making changes in state
     LOGIN(state) {
       state.isLoggedIn = true;
     },
@@ -83,23 +81,21 @@ export default new Vuex.Store({
       state.isLoggedIn = false;
     },
     ADD_TO_CART(state, product) {
-      // state.cart.push(product);
-      const itemInCart = state.cart.find(item => item.id === product.id);
-      if (itemInCart) {
-        itemInCart.quantity += 1;
+      const cartItem = state.cart.find(item => item.id === product.id);
+      if (cartItem) {
+        cartItem.quantity += 1;
       } else {
         state.cart.push({ ...product, quantity: 1 });
-      } //if the item is already in the cart, increase the quantity by 1 else add the item to the cart
-      // console.log(state.cartItems);
-      console.log('Cart Items in veux store:', state.cartItems); // Log to verify
-
+      } // if the item is already in the cart, increase the quantity by 1 else add the item to the cart
     },
-    REMOVE_FROM_CART(state, productID) {
-      state.cart = state.cart.filter(item => item.id !== productID);
+    REMOVE_FROM_CART(state, productId) {
+      state.cart = state.cart.filter(item => item.id !== productId);
+    },
+    CLEAR_CART(state) {
+      state.cart = [];
     }
- 
   },
-  actions: { //actions is for making asynchronous changes in state such as fetching data from an API
+  actions: {
     login({ commit }) {
       commit('LOGIN');
     },
@@ -110,18 +106,18 @@ export default new Vuex.Store({
       commit('ADD_TO_CART', product);
     }
   },
-  getters: { //getters is for getting data from state
+  getters: { // getters is for getting data from state
     produits: state => state.produits,
     totalItemsInCart(state) {
-      return state.cart.reduce((sum, item) => sum + item.quantity, 0); //this will return the total number of items in the cart
+      return state.cart.reduce((sum, item) => sum + item.quantity, 0); // this will return the total number of items in the cart
     },
-    cartItems(state) {
-      return state.cart;
+    cartItems: state => state.cart,
+    cartTotalHT: state => {
+      return state.cart.reduce((total, item) => total + item.prix * item.quantity, 0).toFixed(2);
     },
-    totalCartPrice(state) {
-      return state.cart.reduce((total, item) => {
-        return total + (item.prix * item.quantity);
-      } , 0);
+    cartTotalTTC: (state, getters) => {
+      const taxRate = 1.20; // Taxe de 20%
+      return (getters.cartTotalHT * taxRate).toFixed(2);
     }
   }
 });
