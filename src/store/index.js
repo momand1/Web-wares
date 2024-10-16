@@ -1,12 +1,8 @@
 import Vuex from 'vuex';
+
 export default new Vuex.Store({
-  state: { //state is for getting data from the store 
-    // categories: [
-    //   { id: 1, name: 'Mobilier d\'intérieur' },
-    //   { id: 2, name: 'Luminaires' },
-    //   { id: 3, name: 'Tapis' },
-    //   { id: 4, name: 'Objets de décorations' }
-    // ],
+  state: { 
+    // Produits disponibles
     produits: [
       {
         id: 1,
@@ -45,6 +41,8 @@ export default new Vuex.Store({
         categorieId: 4
       }
     ],
+
+    // Utilisateurs existants (fictifs pour les tests)
     utilisateurs: [
       {
         id: 1,
@@ -69,28 +67,79 @@ export default new Vuex.Store({
         role: 'ADMIN'
       }
     ],
-   
-    cart: [],            // Array to hold products added to cart
-   
+
+    // Panier des produits ajoutés
+    cart: [],
+
+    // Utilisateur connecté (par défaut null)
+    currentUser: null,
   },
-  mutations: { //mutations is for making changes in state
+  mutations: { 
+    // Ajout d'un produit au panier
     ADD_TO_CART(state, product) {
-      // state.cart.push(product);
       const cartItem = state.cart.find(item => item.id === product.id);
       if (cartItem) {
         cartItem.quantite += 1;
       } else {
         state.cart.push({ ...product, quantite: 1 });
-      } //if the item is already in the cart, increase the quantity by 1 else add the item to the cart
+      }
     },
- 
-  },
-  actions: { //actions is for making asynchronous changes in state such as fetching data from an API
-  },
-  getters: { //getters is for getting data from state
-    produits: state => state.produits,
-    totalItemsInCart(state) {
-      return state.cart.reduce((sum, item) => sum + item.quantite, 0); //this will return the total number of items in the cart
+
+    // Ajout d'un nouvel utilisateur lors de l'inscription
+    ADD_USER(state, newUser) {
+      state.utilisateurs.push(newUser);
+    },
+
+    // Définir l'utilisateur connecté après une connexion réussie
+    SET_CURRENT_USER(state, user) {
+      state.currentUser = user;
+    },
+
+    // Déconnexion de l'utilisateur
+    LOGOUT_USER(state) {
+      state.currentUser = null;
     }
+  },
+  actions: { 
+    // Action pour enregistrer un utilisateur
+    registerUser({ commit, state }, userData) {
+      const existingUser = state.utilisateurs.find(user => user.email === userData.email);
+      if (existingUser) {
+        throw new Error('Cet utilisateur existe déjà.');
+      } else {
+        commit('ADD_USER', userData);
+      }
+    },
+
+    // Action pour connecter un utilisateur
+    loginUser({ commit, state }, { email, password }) {
+      const user = state.utilisateurs.find(user => user.email === email && user.motDePasse === password);
+      if (user) {
+        commit('SET_CURRENT_USER', user);
+        return true;
+      } else {
+        throw new Error('Email ou mot de passe incorrect.');
+      }
+    },
+
+    // Action pour déconnecter l'utilisateur
+    logoutUser({ commit }) {
+      commit('LOGOUT_USER');
+    }
+  },
+  getters: { 
+    // Récupération des produits
+    produits: state => state.produits,
+
+    // Calcul du nombre total d'articles dans le panier
+    totalItemsInCart(state) {
+      return state.cart.reduce((sum, item) => sum + item.quantite, 0);
+    },
+
+    // Récupération de l'utilisateur actuellement connecté
+    currentUser: state => state.currentUser,
+
+    // Récupération de tous les utilisateurs
+    utilisateurs: state => state.utilisateurs
   }
 });
