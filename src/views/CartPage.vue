@@ -1,4 +1,3 @@
-<!-- src/views/Panier.vue -->
 <template>
   <div class="cart">
     <h1>Panier</h1>
@@ -8,11 +7,7 @@
         <div>
           <h3>{{ item.titre }}</h3>
           <p>{{ item.prix }}€</p>
-          <p>Quantité: 
-            <button @click="decrementQuantity(item.id)">-</button> 
-            {{ item.quantity }} 
-            <button @click="incrementQuantity(item.id)">+</button>
-          </p>
+          <p>Quantité: {{ item.quantity }}</p>
           <button @click="removeFromCart(item.id)">Retirer</button>
         </div>
       </div>
@@ -29,14 +24,7 @@ export default {
     ...mapGetters(['cartItems']),
   },
   methods: {
-    ...mapMutations(['INCREMENT_QUANTITY', 'DECREMENT_QUANTITY', 'REMOVE_FROM_CART']),
-
-    incrementQuantity(productID) {
-      this.INCREMENT_QUANTITY(productID);
-    },
-    decrementQuantity(productID) {
-      this.DECREMENT_QUANTITY(productID);
-    },
+    ...mapMutations(['REMOVE_FROM_CART']),
     removeFromCart(productID) {
       this.REMOVE_FROM_CART(productID);
     }

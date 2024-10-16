@@ -1,4 +1,3 @@
-<!-- src/views/CheckoutPage.vue -->
 <template>
   <div class="checkout-page">
     <h1>Checkout</h1>
@@ -14,7 +13,7 @@
 
       <!-- Total Summary -->
       <div class="total-summary">
-        <h3>Total: {{ totalCartPrice}}€</h3>
+        <h3>Total: {{ totalCartPrice }}€</h3>
         <button @click="proceedToPayment">Proceed to Payment</button>
       </div>
     </div>
@@ -34,10 +33,13 @@ export default {
     // Get cart items and total from Vuex store
     ...mapState(['cart']),
     ...mapGetters(['totalCartPrice', 'cartItems']),
-
+    cartItemsDebug() {
+      console.log('Cart items in CheckoutPage:', this.cartItems);
+      return this.cartItems;
+    }
   },
   methods: {
-    // Trigger payment 
+    // Trigger payment or other logic
     proceedToPayment() {
       alert('Proceeding to payment...');
     }

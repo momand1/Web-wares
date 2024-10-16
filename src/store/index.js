@@ -73,7 +73,8 @@ export default new Vuex.Store({
     ],
    
     cart: [],
-    isLoggedIn: true,           
+    isLoggedIn: true,  
+    // cartItems: [],         
    
   },
   mutations: { //mutations is for making changes in state
@@ -97,21 +98,7 @@ export default new Vuex.Store({
     },
     REMOVE_FROM_CART(state, productID) {
       state.cart = state.cart.filter(item => item.id !== productID);
-    },
-    INCREMENT_QUANTITY(state, productID) {
-      const item = state.cart.find(item => item.id === productID);
-      if (item) {
-        item.quantity += 1;
-      }
-    },
-    DECREMENT_QUANTITY(state, productID) {
-      const item = state.cart.find(item => item.id === productID);
-      if (item && item.quantity > 1) {
-        item.quantity -= 1;
-      } else {
-        state.cart = state.cart.filter(item => item.id !== productID);
-      }
-    },
+    }
  
   },
   actions: { //actions is for making asynchronous changes in state such as fetching data from an API
@@ -136,7 +123,7 @@ export default new Vuex.Store({
     totalCartPrice(state) {
       return state.cart.reduce((total, item) => {
         return total + (item.prix * item.quantity);
-      }, 0).toFixed(2);
+      } , 0);
     }
   }
 });
