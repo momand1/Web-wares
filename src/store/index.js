@@ -1,9 +1,15 @@
 import Vuex from 'vuex';
 
+// Fonction utilitaire pour chiffrer les mots de passe (simulation)
+function hashPassword(password) {
+  // Cette fonction doit être faite côté backend avec bcrypt ou une autre librairie de chiffrement
+  return password.split('').reverse().join(''); // Simple inversion des caractères pour simuler un hash (à ne pas utiliser en production)
+}
+
 export default new Vuex.Store({
   state: { 
-    // Produits disponibles
     produits: [
+      // Produits disponibles
       {
         id: 1,
         image: 'mobilier-5.jpg',
@@ -13,36 +19,9 @@ export default new Vuex.Store({
         moq: 5,
         categorieId: 1
       },
-      {
-        id: 2,
-        image: 'luminaire-1.jpg',
-        titre: 'Lampe moderne',
-        description: 'Lampe avec un design moderne et éclairage ajustable.',
-        prix: 129.99,
-        moq: 10,
-        categorieId: 2
-      },
-      {
-        id: 3,
-        image: 'tapis-2.jpg',
-        titre: 'Tapis en laine',
-        description: 'Tapis doux en laine avec motif géométrique.',
-        prix: 89.99,
-        moq: 20,
-        categorieId: 3
-      },
-      {
-        id: 4,
-        image: 'deco-3.jpg',
-        titre: 'Vase éthnique en argile',
-        description: 'Vase éthnique en argile avec motifs gravés à la main.',
-        prix: 49.99,
-        moq: 20,
-        categorieId: 4
-      }
+      // ... autres produits
     ],
 
-    // Utilisateurs existants (fictifs pour les tests)
     utilisateurs: [
       {
         id: 1,
@@ -52,7 +31,7 @@ export default new Vuex.Store({
         codePostal: '75001',
         ville: 'Paris',
         email: 'entrepriseA@example.com',
-        motDePasse: 'motdepasseA',
+        motDePasse: hashPassword('motdepasseA'), // Mot de passe chiffré
         role: 'USER'
       },
       {
@@ -63,19 +42,18 @@ export default new Vuex.Store({
         codePostal: '75008',
         ville: 'Paris',
         email: 'entrepriseB@example.com',
-        motDePasse: 'motdepasseB',
+        motDePasse: hashPassword('motdepasseB'), // Mot de passe chiffré
         role: 'ADMIN'
       }
     ],
 
-    // Panier des produits ajoutés
     cart: [],
 
-    // Utilisateur connecté (par défaut null)
-    currentUser: null,
+    currentUser: null, // Utilisateur connecté (null par défaut)
   },
+
   mutations: { 
-    // Ajout d'un produit au panier
+    // Ajouter un produit au panier
     ADD_TO_CART(state, product) {
       const cartItem = state.cart.find(item => item.id === product.id);
       if (cartItem) {
@@ -85,7 +63,7 @@ export default new Vuex.Store({
       }
     },
 
-    // Ajout d'un nouvel utilisateur lors de l'inscription
+    // Ajouter un nouvel utilisateur lors de l'inscription
     ADD_USER(state, newUser) {
       state.utilisateurs.push(newUser);
     },
@@ -100,35 +78,65 @@ export default new Vuex.Store({
       state.currentUser = null;
     }
   },
+
   actions: { 
-    // Action pour enregistrer un utilisateur
+    // Enregistrement d'un utilisateur avec des validations renforcées
     registerUser({ commit, state }, userData) {
+      // Vérification de l'unicité de l'email
       const existingUser = state.utilisateurs.find(user => user.email === userData.email);
       if (existingUser) {
         throw new Error('Cet utilisateur existe déjà.');
-      } else {
-        commit('ADD_USER', userData);
       }
+
+      // Validation du format du SIRET (doit être un nombre de 14 chiffres)
+      const siretRegex = /^\d{14}$/;
+      if (!siretRegex.test(userData.siret)) {
+        throw new Error('Le numéro de SIRET doit comporter exactement 14 chiffres.');
+      }
+
+      // Validation du code postal (doit comporter 5 chiffres)
+      const codePostalRegex = /^\d{5}$/;
+      if (!codePostalRegex.test(userData.codePostal)) {
+        throw new Error('Le code postal doit comporter exactement 5 chiffres.');
+      }
+
+      // Chiffrement du mot de passe avant de l'enregistrer
+      const hashedPassword = hashPassword(userData.motDePasse);
+
+      const newUser = {
+        ...userData,
+        motDePasse: hashedPassword, // Stocker le mot de passe chiffré
+        role: 'USER'
+      };
+
+      commit('ADD_USER', newUser);
     },
 
-    // Action pour connecter un utilisateur
+    // Connexion de l'utilisateur avec vérification du mot de passe chiffré
     loginUser({ commit, state }, { email, password }) {
-      const user = state.utilisateurs.find(user => user.email === email && user.motDePasse === password);
-      if (user) {
-        commit('SET_CURRENT_USER', user);
-        return true;
-      } else {
-        throw new Error('Email ou mot de passe incorrect.');
+      const user = state.utilisateurs.find(user => user.email === email);
+      
+      if (!user) {
+        throw new Error('Email incorrect.');
       }
+
+      // Vérification du mot de passe chiffré
+      const hashedPassword = hashPassword(password);
+      if (user.motDePasse !== hashedPassword) {
+        throw new Error('Mot de passe incorrect.');
+      }
+
+      commit('SET_CURRENT_USER', user);
+      return true;
     },
 
-    // Action pour déconnecter l'utilisateur
+    // Déconnexion de l'utilisateur
     logoutUser({ commit }) {
       commit('LOGOUT_USER');
     }
   },
+
   getters: { 
-    // Récupération des produits
     produits: state => state.produits,
 
     // Calcul du nombre total d'articles dans le panier
@@ -136,10 +144,8 @@ export default new Vuex.Store({
       return state.cart.reduce((sum, item) => sum + item.quantite, 0);
     },
 
-    // Récupération de l'utilisateur actuellement connecté
     currentUser: state => state.currentUser,
 
-    // Récupération de tous les utilisateurs
     utilisateurs: state => state.utilisateurs
   }
 });

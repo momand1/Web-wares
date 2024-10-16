@@ -5,14 +5,16 @@
       <form @submit.prevent="login">
         <div class="input-group">
           <label>Email</label>
-          <input type="email" v-model="email" required placeholder="Entrez votre email" />
+          <input type="email" v-model="email" @input="validateEmail" required placeholder="Entrez votre email" />
+          <small v-if="errors.email" class="error">{{ errors.email }}</small>
         </div>
         <div class="input-group">
           <label>Mot de passe</label>
-          <input type="password" v-model="password" required placeholder="Entrez votre mot de passe" />
+          <input type="password" v-model="password" @input="validatePassword" required placeholder="Entrez votre mot de passe" />
+          <small v-if="errors.password" class="error">{{ errors.password }}</small>
           <small v-if="loginError" class="error">{{ loginError }}</small>
         </div>
-        <button type="submit" class="submit-btn">Se connecter</button>
+        <button type="submit" class="submit-btn" :disabled="hasErrors">Se connecter</button>
       </form>
     </div>
   </div>
@@ -26,18 +28,44 @@ export default {
     return {
       email: '',
       password: '',
-      loginError: null
+      loginError: null,
+      errors: {
+        email: '',
+        password: ''
+      }
     };
+  },
+  computed: {
+    hasErrors() {
+      return Object.values(this.errors).some(error => error !== '');
+    }
   },
   methods: {
     ...mapActions(['loginUser']),
+    validateEmail() {
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailPattern.test(this.email)) {
+        this.errors.email = 'Adresse email invalide.';
+      } else {
+        this.errors.email = '';
+      }
+    },
+    validatePassword() {
+      if (this.password.length < 8) {
+        this.errors.password = 'Le mot de passe doit contenir au moins 8 caractères.';
+      } else {
+        this.errors.password = '';
+      }
+    },
     async login() {
-      try {
-        await this.loginUser({ email: this.email, password: this.password });
-        alert("Connexion réussie");
-        this.$router.push('/');
-      } catch (error) {
-        this.loginError = error.message;
+      if (!this.hasErrors) {
+        try {
+          await this.loginUser({ email: this.email, password: this.password });
+          alert("Connexion réussie");
+          this.$router.push('/');
+        } catch (error) {
+          this.loginError = 'Email ou mot de passe incorrect.';
+        }
       }
     }
   }
@@ -50,7 +78,7 @@ export default {
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background-image: url('@/assets/LoginPagebackground.jpg'); /* Image LoginPagebackground */
+  background-image: url('@/assets/LoginPagebackground.jpg');
   background-size: cover;
   background-position: center;
 }
@@ -100,24 +128,24 @@ input:focus {
   outline: none;
 }
 
-.error {
-  color: red;
-  font-size: 0.85rem;
-}
-
 .submit-btn {
   width: 100%;
-  padding: 1rem;
-  background-color: #007bff;
-  color: white;
-  font-weight: bold;
+  padding: 0.8rem;
+  background-color: #28a745;
   border: none;
+  color: white;
+  font-size: 1rem;
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
 
 .submit-btn:hover {
-  background-color: #0056b3;
+  background-color: #218838;
+}
+
+.error {
+  color: red;
+  font-size: 0.85rem;
 }
 </style>

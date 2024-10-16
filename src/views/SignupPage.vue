@@ -7,24 +7,28 @@
         <input v-model="raisonSociale" type="text" id="raisonSociale" required />
 
         <label for="siret">SIRET</label>
-        <input v-model="siret" type="text" id="siret" required />
+        <input v-model="siret" type="text" id="siret" @input="validateSiret" required />
+        <small v-if="errors.siret" class="error">{{ errors.siret }}</small>
 
         <label for="adresse">Adresse</label>
         <input v-model="adresse" type="text" id="adresse" required />
 
         <label for="codePostal">Code Postal</label>
-        <input v-model="codePostal" type="text" id="codePostal" required />
+        <input v-model="codePostal" type="text" id="codePostal" @input="validateCodePostal" required />
+        <small v-if="errors.codePostal" class="error">{{ errors.codePostal }}</small>
 
         <label for="ville">Ville</label>
         <input v-model="ville" type="text" id="ville" required />
 
         <label for="email">Email</label>
-        <input v-model="email" type="email" id="email" required />
+        <input v-model="email" type="email" id="email" @input="validateEmail" required />
+        <small v-if="errors.email" class="error">{{ errors.email }}</small>
 
         <label for="motDePasse">Mot de Passe</label>
-        <input v-model="motDePasse" type="password" id="motDePasse" required />
+        <input v-model="motDePasse" type="password" id="motDePasse" @input="validatePassword" required />
+        <small v-if="errors.motDePasse" class="error">{{ errors.motDePasse }}</small>
 
-        <button type="submit">S'inscrire</button>
+        <button type="submit" :disabled="hasErrors">S'inscrire</button>
       </form>
     </div>
   </div>
@@ -40,12 +44,65 @@ export default {
       codePostal: '',
       ville: '',
       email: '',
-      motDePasse: ''
+      motDePasse: '',
+      errors: {
+        siret: '',
+        codePostal: '',
+        email: '',
+        motDePasse: ''
+      }
     };
   },
+  computed: {
+    hasErrors() {
+      return Object.values(this.errors).some(error => error !== '');
+    }
+  },
   methods: {
+    validateSiret() {
+      const siretPattern = /^\d{14}$/;
+      if (!siretPattern.test(this.siret)) {
+        this.errors.siret = 'Le SIRET doit contenir exactement 14 chiffres.';
+      } else {
+        this.errors.siret = '';
+      }
+    },
+    validateCodePostal() {
+      const postalPattern = /^\d{5}$/;
+      if (!postalPattern.test(this.codePostal)) {
+        this.errors.codePostal = 'Le code postal doit contenir exactement 5 chiffres.';
+      } else {
+        this.errors.codePostal = '';
+      }
+    },
+    validateEmail() {
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailPattern.test(this.email)) {
+        this.errors.email = 'Adresse email invalide.';
+      } else {
+        this.errors.email = '';
+      }
+    },
+    validatePassword() {
+      const passwordPattern = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\W).{8,}$/;
+      if (!passwordPattern.test(this.motDePasse)) {
+        this.errors.motDePasse = 'Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial.';
+      } else {
+        this.errors.motDePasse = '';
+      }
+    },
     registerUser() {
-      // Logique d'inscription
+      if (!this.hasErrors) {
+        this.$store.dispatch('registerUser', {
+          raisonSociale: this.raisonSociale,
+          siret: this.siret,
+          adresse: this.adresse,
+          codePostal: this.codePostal,
+          ville: this.ville,
+          email: this.email,
+          motDePasse: this.motDePasse
+        });
+      }
     }
   }
 };
@@ -53,7 +110,7 @@ export default {
 
 <style scoped>
 .signup-page {
-  background-image: url('@/assets/SignupPagebackground.jpg'); /* Chemin relatif à image Signup */
+  background-image: url('@/assets/SignupPagebackground.jpg');
   background-size: cover;
   background-position: center;
   min-height: 100vh;
@@ -63,7 +120,7 @@ export default {
 }
 
 .signup-container {
-  background-color: rgba(255, 255, 255, 0.8); /* Légère transparence pour que l'image soit visible */
+  background-color: rgba(255, 255, 255, 0.8);
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
@@ -96,5 +153,10 @@ button {
 
 button:hover {
   background-color: #4cae4c;
+}
+
+.error {
+  color: red;
+  font-size: 0.85rem;
 }
 </style>
