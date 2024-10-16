@@ -93,6 +93,15 @@ export default new Vuex.Store({
     },
     CLEAR_CART(state) {
       state.cart = [];
+    },
+    SET_CART_ITEMS(state, items) {
+      state.cartItems = items;
+    },
+    UPDATE_CART_ITEM_QUANTITY(state, { id, quantity }) {
+      const item = state.cartItems.find(item => item.id === id);
+      if (item) {
+        item.quantity = quantity; // Met à jour la quantité
+      }
     }
   },
   actions: {
@@ -104,6 +113,9 @@ export default new Vuex.Store({
     },
     addToCart({ commit }, product) {
       commit('ADD_TO_CART', product);
+    },
+    updateCartItemQuantity({ commit }, { id, quantity }) {
+      commit('UPDATE_CART_ITEM_QUANTITY', { id, quantity });
     }
   },
   getters: { // getters is for getting data from state

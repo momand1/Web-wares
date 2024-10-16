@@ -1,11 +1,22 @@
 <template>
   <tr>
+    <td><img :src="require(`@/assets/${item.image}`)" alt="Image du produit" class="img-thumbnail" width="80" height="80">
+  </td>
     <td>{{ item.titre }}</td>
-    <td>{{ item.quantity}}</td>
+    <td>  <input
+              type="number"
+              min="1"
+              :value="item.quantity"
+              @input="updateQuantity(item.id, $event.target.value)"
+              class="form-control"
+              style="width: 60px;"
+            />
+    </td>
     <td>{{ item.prix }} €</td>
-    <td>{{ (item.prix * item.quantity).toFixed(2) }} €</td>
+    <td>{{ (item.prix * item.quantity).toFixed(2) }} €</td> <!-- Total par produit -->
+
     <td>
-      <button @click="removeFromCart(item.id)">Retirer</button>
+      <button @click="removeFromCart(item.id)">  <i class="fas fa-trash"></i></button>
     </td>
   </tr>
 </template>
@@ -21,18 +32,18 @@ export default {
   methods: {
     removeFromCart(productId) {
       this.$emit('remove-from-cart', productId);
-    }
+    },
+    updateQuantity(id, newQuantity) {
+      this.$emit('update-quantity', { id, quantity: Number(newQuantity) });
+    },
   }
 };
 </script>
 
 <style scoped>
 button {
-  background-color: red;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  cursor: pointer;
+    transition: background-color 0.3s ease;
+
 }
 </style>
 

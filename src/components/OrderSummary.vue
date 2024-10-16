@@ -2,8 +2,11 @@
 <template>
   <div class="cart-summary">
     <p><strong>Total HT :</strong> {{ totalHT }} €</p>
+    <p><strong>Frais de livraison :</strong> 5.99 €</p>
     <p><strong>Total TTC :</strong> {{ totalTTC }} €</p>
-    <button @click="Checkout">Confirmer</button>
+    <router-link to="/checkout" class="btn btn-primary">
+      Détail Panier
+    </router-link>  
   </div>
 </template>
 
@@ -31,8 +34,8 @@ export default {
 .cart-summary {
   margin-top: 20px;
 }
-button {
-  background-color: green;
+.btn {
+  background-color: grey;
   color: white;
   padding: 10px 20px;
   border: none;
