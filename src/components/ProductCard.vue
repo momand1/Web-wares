@@ -1,6 +1,6 @@
 <template>
     <div class="product-card">
-        <router-link :to="{ name: 'ProductDetails', params: { id: product.id } }">
+        <router-link :to="{ name: 'ProductDetails', params: {id :product.id } }">
         <img :src="require(`@/assets/${product.image}`)" :alt="product.titre">
         <h3>{{ product.titre }}</h3>
         <p>{{ product.description }}</p>
@@ -15,7 +15,7 @@
 <script>
     import { mapState} from 'vuex';
     export default {
-        // name: 'ProductCard',
+        //name: 'ProductCard',
 
         props: {
             product: {
@@ -32,13 +32,10 @@
         methods: {
             addToCart(product) {
                 this.$store.dispatch('addToCart', product); 
-            },
+            }
 
             // ...mapMutations(['ADD_TO_CART'])
-        },
-
-
-        
+        }   
     }
 </script>
 
