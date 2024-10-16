@@ -13,10 +13,13 @@ const router = createRouter({
   history: createWebHistory(),
   routes: [
     { path: '/', component: LandingPage },
+    
     { path: '/ProductsListPage', component: ProductsListPage },
-    { path: '/ProductDetails', component: ProductDetails },
-    { path: '/CartPage', component: CartPage },
-    { path: '/CheckoutPage', component: CheckoutPage },
+    { path: '/ProductDetails/:id', component: ProductDetails, name: 'ProductDetails' },
+    { path: '/ProductDetails', component: ProductDetails, name: 'ProductDetailsList' }, // Add this line for general product list
+
+    { path: '/cart', component: CartPage },
+    { path: '/checkout', component: CheckoutPage },
     { path: '/signup', component: SignupPage },
     { path: '/login', component: LoginPage },
     { path: '/admin', component: AdminDashboard }
