@@ -1,68 +1,116 @@
-<!-- src/views/Panier.vue -->
+<!-- src/views/CartPage.vue -->
 <template>
-  <div class="cart">
-    <h1>Panier</h1>
-    <div v-if="cartItems.length > 0">
-      <div v-for="item in cartItems" :key="item.id" class="cart-item">
-        <img :src="require(`@/assets/${item.image}`)" :alt="item.titre" />
-        <div>
-          <h3>{{ item.titre }}</h3>
-          <p>{{ item.prix }}€</p>
-          <p>Quantité: 
-            <button @click="decrementQuantity(item.id)">-</button> 
-            {{ item.quantity }} 
-            <button @click="incrementQuantity(item.id)">+</button>
-          </p>
-          <button @click="removeFromCart(item.id)">Retirer</button>
-        </div>
-      </div>
-    </div>
-    <p v-else>Votre panier est vide.</p>
+  <div class="container mt-5">
+    <h1 class="mb-4">Mon Panier</h1>
+    <table class="table table-striped" v-if="cartItems.length > 0">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">Produit</th>
+          <th scope="col">Quantité</th>
+          <th scope="col">Prix HT</th>
+          <th scope="col">Total HT</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <CartItem
+          v-for="item in cartItems"
+          :key="item.id"
+          :item="item"
+          @remove-from-cart="removeFromCart"
+        />
+      </tbody>
+    </table>
+
+    <div v-else class="alert alert-info">Votre panier est vide.</div>
+
+    <CartSummary v-if="cartItems.length > 0" :totalHT="cartTotalHT" :totalTTC="cartTotalTTC" @checkout="checkout" />
   </div>
 </template>
 
 <script>
+import CartItem from '@/components/CartItem.vue';
+import CartSummary from '@/components/OrderSummary.vue';
 import { mapGetters, mapMutations } from 'vuex';
 
 export default {
+  components: {
+    CartItem,
+    CartSummary
+  },
   computed: {
-    ...mapGetters(['cartItems']),
+    ...mapGetters(['cartItems', 'cartTotalHT', 'cartTotalTTC'])
   },
   methods: {
-    ...mapMutations(['INCREMENT_QUANTITY', 'DECREMENT_QUANTITY', 'REMOVE_FROM_CART']),
-
-    incrementQuantity(productID) {
-      this.INCREMENT_QUANTITY(productID);
+    ...mapMutations(['REMOVE_FROM_CART']),
+    removeFromCart(productId) {
+      this.REMOVE_FROM_CART(productId);
     },
-    decrementQuantity(productID) {
-      this.DECREMENT_QUANTITY(productID);
-    },
-    removeFromCart(productID) {
-      this.REMOVE_FROM_CART(productID);
+    checkout() {
+      // Logique pour passer à la caisse
+      alert('Passer à la caisse');
     }
-  },
+  }
 };
 </script>
 
 <style scoped>
-.cart-item {
-  display: flex;
-  align-items: center;
+/* Style de la page du panier */
+.cart-page {
+  margin: 40px auto;
+  max-width: 900px;
+  padding: 20px;
+  background-color: #f9f9f9;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+/* Style pour la table des articles */
+table {
+  width: 100%;
+  border-collapse: collapse;
   margin-bottom: 20px;
 }
-.cart-item img {
-  width: 50px;
-  height: 50px;
-  margin-right: 20px;
+
+table th, table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
 }
+
+/* Style pour l'en-tête des colonnes */
+table th {
+  background-color: #f2f2f2;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Style des cellules */
+table td {
+  color: #666;
+}
+
+/* Bouton pour retirer un produit */
 button {
-  padding: 5px 10px;
-  background-color: #ff4d4d;
+  background-color: #e74c3c;
   color: white;
+  padding: 8px 12px;
   border: none;
   cursor: pointer;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
 }
+
 button:hover {
-  background-color: #ff3333;
+  background-color: #c0392b;
+}
+
+/* Style pour le texte "Panier vide" */
+.cart-empty {
+  text-align: center;
+  color: #999;
+  font-size: 18px;
+  margin-top: 20px;
 }
 </style>
