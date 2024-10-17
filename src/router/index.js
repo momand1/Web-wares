@@ -7,9 +7,9 @@ import CartPage from '@/views/CartPage.vue';
 import CheckoutPage from '@/views/CheckoutPage.vue';
 import SignupPage from '@/views/SignupPage.vue';
 import LoginPage from '@/views/LoginPage.vue';
-import AdminDashboard from '@/views/AdminDasboard.vue';
+import AdminDashboard from '@/views/AdminDashboard.vue';
 
-// Create the router instance
+
 const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -17,7 +17,7 @@ const router = createRouter({
     
     { path: '/ProductsListPage', component: ProductsListPage },
     { path: '/ProductDetails/:id', component: ProductDetails, name: 'ProductDetails' },
-    { path: '/ProductDetails', component: ProductDetails, name: 'ProductDetailsList' }, // Add this line for general product list
+    { path: '/ProductDetails', component: ProductDetails, name: 'ProductDetailsList' }, 
 
     { path: '/cart', component: CartPage },
     { path: '/checkout', component: CheckoutPage },

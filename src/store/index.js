@@ -1,7 +1,7 @@
 import Vuex from 'vuex';
 
 export default new Vuex.Store({
-  state: { // state is for getting data from the store 
+  state: {
     categories: [
       { id: 1, name: 'Mobilier d\'intérieur' },
       { id: 2, name: 'Luminaires' },
@@ -71,9 +71,11 @@ export default new Vuex.Store({
       }
     ],
     cart: [],
-    isLoggedIn: true,  
+    isLoggedIn: true,
+    currentUser: null,
+    orders: []
   },
-  mutations: { // mutations is for making changes in state
+  mutations: {
     LOGIN(state) {
       state.isLoggedIn = true;
     },
@@ -83,16 +85,75 @@ export default new Vuex.Store({
     ADD_TO_CART(state, product) {
       const cartItem = state.cart.find(item => item.id === product.id);
       if (cartItem) {
-        cartItem.quantity += 1;
+        cartItem.quantity += product.moq;
       } else {
-        state.cart.push({ ...product, quantity: 1 });
-      } // if the item is already in the cart, increase the quantity by 1 else add the item to the cart
+        state.cart.push({ ...product, quantity: product.moq });
+      }
     },
     REMOVE_FROM_CART(state, productId) {
       state.cart = state.cart.filter(item => item.id !== productId);
     },
     CLEAR_CART(state) {
       state.cart = [];
+    },
+    ADD_USER(state, newUser) {
+      state.utilisateurs.push(newUser);
+    },
+    SET_CURRENT_USER(state, user) {
+      state.currentUser = user;
+    },
+    LOGOUT_USER(state) {
+      state.currentUser = null;
+    },
+    SET_CART_ITEMS(state, items) {
+      state.cartItems = items;
+    },
+    UPDATE_CART_ITEM_QUANTITY(state, { id, quantity }) {
+      const item = state.cartItems.find(item => item.id === id);
+      if (item) {
+        item.quantity = quantity; // Met à jour la quantité
+      }
+    },
+    TOGGLE_USER_ROLE(state, userId) {
+      const user = state.utilisateurs.find(user => user.id === userId);
+      if (user) {
+        user.role = user.role === 'USER' ? 'ADMIN' : 'USER';
+      }
+    },
+    ADD_PRODUCT(state, product) {
+      state.produits.push(product);
+    },
+    UPDATE_PRODUCT(state, updatedProduct) {
+      const index = state.produits.findIndex(product => product.id === updatedProduct.id);
+      if (index !== -1) {
+        // Direct assignment to state to update the product
+        state.produits[index] = updatedProduct;
+      }
+    },
+    REMOVE_PRODUCT(state, productId) {
+      state.produits = state.produits.filter(product => product.id !== productId);
+    },
+    ADD_CATEGORY(state, category) {
+      state.categories.push(category);
+    },
+    UPDATE_CATEGORY(state, updatedCategory) {
+      const index = state.categories.findIndex(cat => cat.id === updatedCategory.id);
+      if (index !== -1) {
+        // Direct assignment to state to update the category
+        state.categories[index] = updatedCategory;
+      }
+    },
+    REMOVE_CATEGORY(state, categoryId) {
+      state.categories = state.categories.filter(cat => cat.id !== categoryId);
+    },
+    ADD_ORDER(state, order) {
+      state.orders.push(order);
+    },
+    MARK_ORDER_DELIVERED(state, orderId) {
+      const order = state.orders.find(order => order.id === orderId);
+      if (order) {
+        order.delivered = true;
+      }
     }
   },
   actions: {
@@ -104,12 +165,56 @@ export default new Vuex.Store({
     },
     addToCart({ commit }, product) {
       commit('ADD_TO_CART', product);
+    },
+    registerUser({ commit, state }, userData) {
+      const existingUser = state.utilisateurs.find(user => user.email === userData.email);
+      if (existingUser) {
+        throw new Error('Cet utilisateur existe déjà.');
+      } else {
+        commit('ADD_USER', userData);
+      }
+    },
+    loginUser({ commit, state }, { email, password }) {
+      const user = state.utilisateurs.find(user => user.email === email && user.motDePasse === password);
+      if (user) {
+        commit('SET_CURRENT_USER', user);
+        return true;
+      } else {
+        throw new Error('Email ou mot de passe incorrect.');
+      }
+    },
+    updateCartItemQuantity({ commit }, { id, quantity }) {
+      commit('UPDATE_CART_ITEM_QUANTITY', { id, quantity });
+    },
+    toggleUserRole({ commit }, userId) {
+      commit('TOGGLE_USER_ROLE', userId);
+    },
+    addProduct({ commit }, product) {
+      commit('ADD_PRODUCT', product);
+    },
+    updateProduct({ commit }, updatedProduct) {
+      commit('UPDATE_PRODUCT', updatedProduct);
+    },
+    removeProduct({ commit }, productId) {
+      commit('REMOVE_PRODUCT', productId);
+    },
+    addCategory({ commit }, category) {
+      commit('ADD_CATEGORY', category);
+    },
+    updateCategory({ commit }, updatedCategory) {
+      commit('UPDATE_CATEGORY', updatedCategory);
+    },
+    removeCategory({ commit }, categoryId) {
+      commit('REMOVE_CATEGORY', categoryId);
+    },
+    markOrderDelivered({ commit }, orderId) {
+      commit('MARK_ORDER_DELIVERED', orderId);
     }
   },
-  getters: { // getters is for getting data from state
+  getters: {
     produits: state => state.produits,
     totalItemsInCart(state) {
-      return state.cart.reduce((sum, item) => sum + item.quantity, 0); // this will return the total number of items in the cart
+      return state.cart.reduce((sum, item) => sum + item.quantity, 0);
     },
     cartItems: state => state.cart,
     cartTotalHT: state => {
@@ -118,6 +223,7 @@ export default new Vuex.Store({
     cartTotalTTC: (state, getters) => {
       const taxRate = 1.20; // Taxe de 20%
       return (getters.cartTotalHT * taxRate).toFixed(2);
-    }
+    },
+    orders: state => state.orders
   }
 });

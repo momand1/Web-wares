@@ -1,77 +1,78 @@
-<!-- src/views/LandingPage.vue -->
 <template>
-    
-    <nav class="navbar">
-        <div class="navbar-logo">
-            <router-link to="">
-                <img src="../assets/logo.png" alt="logo" class="logo ms-4" />
-            </router-link>
-        </div>
-        <div class="navbar-container">
-            <!-- Logo -->
-            
-            <!-- Navigation Links -->
-            <ul class="navbar-links">
-                <li><router-link to="/">Accueil</router-link></li>
+  <nav class="navbar">
+    <div class="navbar-logo">
+      <router-link to="">
+        <img src="../assets/logo.png" alt="logo" class="logo ms-4" />
+      </router-link>
+    </div>
+    <div class="burger-menu" @click="toggleMenu" :class="{ 'open': isMenuOpen }">
+      <div class="bar"></div>
+      <div class="bar"></div>
+      <div class="bar"></div>
+    </div>
+    <div class="navbar-container" :class="{ 'active': isMenuOpen }">
+      <ul class="navbar-links">
+        <li><router-link to="/" @click="closeMenu">Accueil</router-link></li>
 
-                <!-- Dropdown Menu -->
+        <!-- Dropdown Menu -->
         <li
           class="dropdown"
-          @mouseenter="showDropdown = true"
-          @mouseleave="showDropdown = false"
-          >
-          <span
-          ><router-link to="/ProductsListPage">Produits</router-link></span
-          >
+          @click="toggleDropdown"
+          :class="{ 'active': showDropdown }"
+        >
+          <span>
+            <router-link to="/ProductsListPage" @click="closeMenu">Produits</router-link>
+          </span>
           <ul v-if="showDropdown" class="dropdown-menu">
-              <li><router-link to="">Catégorie 1</router-link></li>
-              <li><router-link to="">Catégorie 2</router-link></li>
-              <li><router-link to="">Catégorie 3</router-link></li>
-              <li><router-link to="">Catégorie 4</router-link></li>
-            </ul>
+            <li><router-link :to="{ path: '/ProductsListPage', query: { category: '1' }}" @click="closeMenu">Catégorie 1</router-link></li>
+            <li><router-link :to="{ path: '/ProductsListPage', query: { category: '2' }}" @click="closeMenu">Catégorie 2</router-link></li>
+            <li><router-link :to="{ path: '/ProductsListPage', query: { category: '3' }}" @click="closeMenu">Catégorie 3</router-link></li>
+            <li><router-link :to="{ path: '/ProductsListPage', query: { category: '4' }}" @click="closeMenu">Catégorie 4</router-link></li>
+          </ul>
         </li>
-        <li>
-          <router-link to="/ProductDetails">Details de Produits</router-link>
-        </li>
-        <li><router-link to="/cart">Panier</router-link></li>
-        <li><router-link to="/checkout">Caisse</router-link></li>
-        <li><router-link to="/admin">Admin</router-link></li>
-    </ul>
-</div>
-<div class="text-end me-5 mb-4">
-  <div class="d-flex align-items-center" id="logs">
-    <img src="../assets/user.png" alt="User Icon" class="icon" />
-    <a href="/login" class="btn btn-link">Connexion</a>
-  </div>
-  <div class="d-flex align-items-center" id="logs">
-    <img src="../assets/signup.png" alt="Sign Up Icon" class="icon" />
-    <a href="/signup" class="btn btn-link">Inscription</a>
-  </div>
-</div>
-<form class="d-flex me-4" role="search">
-    <input
-    class="form-control me-2"
-    type="search"
-    placeholder="Search"
-    aria-label="Search"
-    />
-    <button class="btn btn-info me-2" type="submit">Search</button>
-</form>
+      
+        <li><router-link to="/cart" @click="closeMenu">Panier</router-link></li>
+        <li><router-link to="/checkout" @click="closeMenu">Caisse</router-link></li>
+        <li><router-link to="/admin" @click="closeMenu">Admin</router-link></li>
+      </ul>
+    </div>
+    <div class="text-end me-5 mb-4">
+      <div class="d-flex align-items-center pt-4" id="logs">
+        <img src="../assets/user.png" alt="User Icon" class="icon" />
+        <a href="/login" class="btn btn-link" @click="closeMenu">Connexion</a>
+      </div>
+      <div class="d-flex align-items-center pt-4" id="logs">
+        <img src="../assets/signup.png" alt="Sign Up Icon" class="icon" />
+        <a href="/signup" class="btn btn-link" @click="closeMenu">Inscription</a>
+      </div>
+    </div>
   </nav>
 </template>
 
 <script>
 export default {
-    name: "HeaderPage",
-    data() {
+  data() {
     return {
       showDropdown: false,
+      isMenuOpen: false,
     };
   },
-}
+  methods: {
+    toggleMenu() {
+      this.isMenuOpen = !this.isMenuOpen;
+    },
+    closeMenu() {
+      this.isMenuOpen = false;
+      this.showDropdown = false;
+    },
+    toggleDropdown() {
+      this.showDropdown = !this.showDropdown;
+    },
+  },
+};
 </script>
 
-<style>
+<style scoped>
 .logo {
   width: 50px;
   height: 50px;
@@ -79,56 +80,38 @@ export default {
 }
 
 .icon {
-  width: 40px; /* Set the width of the icon */
-  height: auto; /* Maintain aspect ratio */
-  margin-bottom: 5px; /* Spacing between icon and text */
-}
-.text-end {
-  display: flex;
-  justify-content: flex-end; /* Align items to the end */
-}
-
-.container {
-  margin-top: 20px; /* Optional spacing */
-}
-.equal-height {
-  width: 100%; /* Make images responsive */
-  height: auto; /* Maintain aspect ratio */
-  height: 100%; /* Make sure the height fills the column */
-  object-fit: cover; /* Ensure the image covers the area */
-}
-.overflow {
-  position: relative;
-  overflow: hidden;
-}
-.zoom img {
-  transition: all 0.2s linear;
-}
-.zoom:hover img {
-  -webkit-transform: scale(1.1);
-  transform: scale(1.1);
+  width: 40px;
+  height: auto;
+  margin-bottom: 5px;
 }
 
 .navbar {
   background-color: #333;
   color: #fff;
-  align-items: center;
-  display: flex;
-  padding: 10px 20px;
-}
-.navbar-container {
   display: flex;
   justify-content: space-between;
   align-items: center;
-
-  flex: 1;
-  justify-content: center;
   padding: 10px 20px;
+  position: relative;
+  z-index: 1000;
 }
+
+.navbar-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+  z-index: 1000;
+  opacity: 0.9;
+  transition: opacity 0.5s ease;
+}
+
 .navbar-links {
   list-style: none;
   display: flex;
   gap: 30px;
+  margin: 0;
+  padding: 0;
 }
 
 .navbar-links li {
@@ -138,10 +121,19 @@ export default {
 .navbar-links a {
   color: #fff;
   text-decoration: none;
+  transition: color 0.3s ease, background-color 0.3s ease;
 }
+.navbar-links a:hover {
+  color: #333;
+  background-color: rgb(240, 240, 158);
+  border-radius: 5px;
+  padding: 5px;
+}
+
 .dropdown {
   position: relative;
 }
+
 .dropdown-menu {
   position: absolute;
   top: 100%;
@@ -149,38 +141,122 @@ export default {
   background-color: #444;
   list-style: none;
   padding: 10px;
-  display: block;
+  display: none;
   min-width: 150px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
+
+.dropdown.active .dropdown-menu {
+  display: block;
+}
+
 .dropdown-menu li {
   padding: 5px 0;
 }
+
 .dropdown-menu a {
   color: #fff;
   text-decoration: none;
 }
+
 .dropdown-menu a:hover {
   color: #ccc;
 }
-.text-start {
-    display: flex;
-    justify-content: flex-start; /* Align items to the start */
+
+.text-end {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
 }
 
 .d-flex {
-    align-items: center; /* Center items vertically */
-    margin-right: 15px; /* Add spacing between each link/icon pair */
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
 }
 
 .btn-link {
-    color: #fff; /* Keep your link color */
-    margin-left: 8px; /* Add space between icon and text */
+  color: #fff;
+  margin-left: 8px;
 }
 
+.burger-menu {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+}
 
+.bar {
+  width: 25px;
+  height: 3px;
+  background-color: #fff;
+  margin: 3px 0;
+  transition: all 0.4s ease;
+}
 
+.burger-menu.open .bar:nth-child(1) {
+  transform: rotate(45deg) translate(5px, 5px);
+}
+
+.burger-menu.open .bar:nth-child(2) {
+  opacity: 0;
+}
+
+.burger-menu.open .bar:nth-child(3) {
+  transform: rotate(-45deg) translate(5px, -5px);
+}
+
+@media screen and (max-width: 768px) {
+  .burger-menu {
+    display: flex;
+  }
+
+  .navbar-container {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background-color: #333;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 20px;
+    display: none;
+  }
+
+  .navbar-container.active {
+    display: flex;
+  }
+
+  .navbar-links {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .navbar-links li {
+    margin-bottom: 15px;
+  }
+
+  .dropdown-menu {
+    position: static;
+    background-color: transparent;
+    box-shadow: none;
+    padding-left: 20px;
+  }
+
+  .text-end {
+    display: none;
+  }
+
+  .navbar-container.active .text-end {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    margin-top: 15px;
+  }
+
+  .navbar-container.active .d-flex {
+    margin-bottom: 15px;
+  }
+}
 </style>
-
-
-
