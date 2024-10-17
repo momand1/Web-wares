@@ -3,17 +3,19 @@
     <div class="form-container">
       <h1>Connexion</h1>
       <form @submit.prevent="login">
-        <div class="input-group">
-          <label>Email</label>
-          <input type="email" v-model="email" @input="validateEmail" required placeholder="Entrez votre email" />
-          <small v-if="errors.email" class="error">{{ errors.email }}</small>
+        <div class="form-group">
+          <label>Email ou SIRET</label>
+          <input type="text" v-model="emailOrSiret" @input="validateEmailOrSiret" required placeholder="Entrez votre email ou SIRET" />
+          <small v-if="errors.emailOrSiret" class="error">{{ errors.emailOrSiret }}</small>
         </div>
-        <div class="input-group">
+
+        <div class="form-group">
           <label>Mot de passe</label>
           <input type="password" v-model="password" @input="validatePassword" required placeholder="Entrez votre mot de passe" />
           <small v-if="errors.password" class="error">{{ errors.password }}</small>
           <small v-if="loginError" class="error">{{ loginError }}</small>
         </div>
+
         <button type="submit" class="submit-btn" :disabled="hasErrors">Se connecter</button>
       </form>
     </div>
@@ -21,16 +23,14 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
-
 export default {
   data() {
     return {
-      email: '',
+      emailOrSiret: '',
       password: '',
       loginError: null,
       errors: {
-        email: '',
+        emailOrSiret: '',
         password: ''
       }
     };
@@ -41,13 +41,11 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['loginUser']),
-    validateEmail() {
-      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!emailPattern.test(this.email)) {
-        this.errors.email = 'Adresse email invalide.';
+    validateEmailOrSiret() {
+      if (this.emailOrSiret === '') {
+        this.errors.emailOrSiret = 'Ce champ est obligatoire.';
       } else {
-        this.errors.email = '';
+        this.errors.emailOrSiret = '';
       }
     },
     validatePassword() {
@@ -57,15 +55,25 @@ export default {
         this.errors.password = '';
       }
     },
-    async login() {
+    login() {
       if (!this.hasErrors) {
-        try {
-          await this.loginUser({ email: this.email, password: this.password });
-          alert("Connexion réussie");
-          this.$router.push('/');
-        } catch (error) {
-          this.loginError = 'Email ou mot de passe incorrect.';
+        const utilisateurs = JSON.parse(localStorage.getItem('utilisateurs')) || [];
+        const user = utilisateurs.find(user => user.email === this.emailOrSiret || user.siret === this.emailOrSiret);
+
+        if (!user) {
+          this.loginError = "Utilisateur non trouvé.";
+          return;
         }
+
+        const hashedPassword = btoa(this.password);
+        if (user.motDePasse !== hashedPassword) {
+          this.loginError = 'Mot de passe incorrect.';
+          return;
+        }
+
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        alert('Connexion réussie');
+        this.$router.push('/');
       }
     }
   }
@@ -74,78 +82,67 @@ export default {
 
 <style scoped>
 .login-page {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
   background-image: url('@/assets/LoginPagebackground.jpg');
   background-size: cover;
   background-position: center;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .form-container {
-  background: white;
-  padding: 2rem;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   max-width: 400px;
   width: 100%;
-  transition: transform 0.3s ease;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.form-container:hover {
-  transform: translateY(-5px);
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-h1 {
-  text-align: center;
-  margin-bottom: 1.5rem;
-  font-size: 1.8rem;
-  color: #333;
-}
-
-.input-group {
-  margin-bottom: 1.2rem;
+.form-group {
+  display: flex;
+  flex-direction: column;
 }
 
 label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: bold;
+  margin-bottom: 8px;
 }
 
 input {
-  width: 100%;
-  padding: 0.8rem;
+  padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  font-size: 1rem;
-  transition: border-color 0.3s ease;
 }
 
-input:focus {
-  border-color: #007bff;
-  outline: none;
-}
-
-.submit-btn {
-  width: 100%;
-  padding: 0.8rem;
-  background-color: #28a745;
-  border: none;
+button {
+  padding: 12px;
+  background-color: #5cb85c;
   color: white;
-  font-size: 1rem;
+  border: none;
   border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
 }
 
-.submit-btn:hover {
-  background-color: #218838;
+button:hover {
+  background-color: #4cae4c;
 }
 
 .error {
   color: red;
   font-size: 0.85rem;
 }
-</style>
+
+/* Responsive styling */
+@media (max-width: 768px) {
+  .form-container {
+    padding: 15px;
+  }
+}
+</style> 

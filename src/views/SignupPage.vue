@@ -3,30 +3,55 @@
     <div class="signup-container">
       <h1>Inscription</h1>
       <form @submit.prevent="registerUser">
-        <label for="raisonSociale">Raison Sociale</label>
-        <input v-model="raisonSociale" type="text" id="raisonSociale" required />
+        <div class="form-row">
+          <div class="form-group">
+            <label for="raisonSociale">Raison Sociale</label>
+            <input v-model="raisonSociale" type="text" id="raisonSociale" required />
+          </div>
 
-        <label for="siret">SIRET</label>
-        <input v-model="siret" type="text" id="siret" @input="validateSiret" required />
-        <small v-if="errors.siret" class="error">{{ errors.siret }}</small>
+          <div class="form-group">
+            <label for="siret">SIRET</label>
+            <input v-model="siret" type="text" id="siret" @input="validateSiret" required />
+            <small v-if="errors.siret" class="error">{{ errors.siret }}</small>
+          </div>
+        </div>
 
-        <label for="adresse">Adresse</label>
-        <input v-model="adresse" type="text" id="adresse" required />
+        <div class="form-row">
+          <div class="form-group">
+            <label for="adresse">Adresse</label>
+            <input v-model="adresse" type="text" id="adresse" required />
+          </div>
 
-        <label for="codePostal">Code Postal</label>
-        <input v-model="codePostal" type="text" id="codePostal" @input="validateCodePostal" required />
-        <small v-if="errors.codePostal" class="error">{{ errors.codePostal }}</small>
+          <div class="form-group">
+            <label for="codePostal">Code Postal</label>
+            <input v-model="codePostal" type="text" id="codePostal" @input="validateCodePostal" required />
+            <small v-if="errors.codePostal" class="error">{{ errors.codePostal }}</small>
+          </div>
 
-        <label for="ville">Ville</label>
-        <input v-model="ville" type="text" id="ville" required />
+          <div class="form-group">
+            <label for="ville">Ville</label>
+            <input v-model="ville" type="text" id="ville" required />
+          </div>
+        </div>
 
-        <label for="email">Email</label>
-        <input v-model="email" type="email" id="email" @input="validateEmail" required />
-        <small v-if="errors.email" class="error">{{ errors.email }}</small>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input v-model="email" type="email" id="email" @input="validateEmail" required />
+          <small v-if="errors.email" class="error">{{ errors.email }}</small>
+        </div>
 
-        <label for="motDePasse">Mot de Passe</label>
-        <input v-model="motDePasse" type="password" id="motDePasse" @input="validatePassword" required />
-        <small v-if="errors.motDePasse" class="error">{{ errors.motDePasse }}</small>
+        <div class="form-group">
+          <label for="motDePasse">Mot de Passe</label>
+          <input v-model="motDePasse" type="password" id="motDePasse" @input="validatePassword" required />
+          <small v-if="errors.motDePasse" class="error">{{ errors.motDePasse }}</small>
+        </div>
+
+        <!-- Nouveau champ : Confirmer le mot de passe -->
+        <div class="form-group">
+          <label for="confirmerMotDePasse">Confirmer le Mot de Passe</label>
+          <input v-model="confirmerMotDePasse" type="password" id="confirmerMotDePasse" @input="validateConfirmPassword" required />
+          <small v-if="errors.confirmerMotDePasse" class="error">{{ errors.confirmerMotDePasse }}</small>
+        </div>
 
         <button type="submit" :disabled="hasErrors">S'inscrire</button>
       </form>
@@ -45,11 +70,13 @@ export default {
       ville: '',
       email: '',
       motDePasse: '',
+      confirmerMotDePasse: '', // Nouveau champ pour confirmer le mot de passe
       errors: {
         siret: '',
         codePostal: '',
         email: '',
-        motDePasse: ''
+        motDePasse: '',
+        confirmerMotDePasse: '' // Nouvelle erreur potentielle
       }
     };
   },
@@ -91,21 +118,42 @@ export default {
         this.errors.motDePasse = '';
       }
     },
+    validateConfirmPassword() {
+      if (this.motDePasse !== this.confirmerMotDePasse) {
+        this.errors.confirmerMotDePasse = 'Les mots de passe ne correspondent pas.';
+      } else {
+        this.errors.confirmerMotDePasse = '';
+      }
+    },
     registerUser() {
+      this.validatePassword();
+      this.validateConfirmPassword();
+
       if (!this.hasErrors) {
-        this.$store.dispatch('registerUser', {
+        const newUser = {
           raisonSociale: this.raisonSociale,
           siret: this.siret,
           adresse: this.adresse,
           codePostal: this.codePostal,
           ville: this.ville,
           email: this.email,
-          motDePasse: this.motDePasse
-        });
+          motDePasse: hashPassword(this.motDePasse)
+        };
+
+        let utilisateurs = JSON.parse(localStorage.getItem('utilisateurs')) || [];
+        utilisateurs.push(newUser);
+        localStorage.setItem('utilisateurs', JSON.stringify(utilisateurs));
+
+        alert('Inscription réussie');
+        this.$router.push('/login');
       }
     }
   }
 };
+
+function hashPassword(password) {
+  return btoa(password); // Simuler un hachage simple
+}
 </script>
 
 <style scoped>
@@ -120,30 +168,44 @@ export default {
 }
 
 .signup-container {
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(255, 255, 255, 0.9);
   padding: 20px;
   border-radius: 8px;
+  max-width: 600px;
+  width: 100%;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 form {
   display: flex;
   flex-direction: column;
+  gap: 20px;
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
 }
 
 label {
-  margin-top: 10px;
+  margin-bottom: 8px;
 }
 
 input {
-  margin-bottom: 10px;
-  padding: 8px;
+  padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
 }
 
 button {
-  padding: 10px;
+  padding: 12px;
   background-color: #5cb85c;
   color: white;
   border: none;
@@ -158,5 +220,13 @@ button:hover {
 .error {
   color: red;
   font-size: 0.85rem;
+}
+
+/* Responsive styling */
+@media (min-width: 768px) {
+  .form-row {
+    flex-direction: row;
+    gap: 10px;
+  }
 }
 </style>
