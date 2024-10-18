@@ -7,7 +7,14 @@ import CartPage from '@/views/CartPage.vue';
 import CheckoutPage from '@/views/CheckoutPage.vue';
 import SignupPage from '@/views/SignupPage.vue';
 import LoginPage from '@/views/LoginPage.vue';
-import AdminDashboard from '@/views/AdminDasboard.vue';
+
+
+
+import AdminDashboard from '../components/AdminDashboard.vue';
+import UsersManagement from '../components/UsersManagement.vue';
+import ProductsManagement from '../components/ProductsManagement.vue';
+import CategoriesManagement from '../components/CategoriesManagement.vue';
+import OrdersManagement from '../components/OrdersManagement.vue';
 
 // Create the router instance
 const router = createRouter({
@@ -23,7 +30,16 @@ const router = createRouter({
     { path: '/checkout', component: CheckoutPage },
     { path: '/signup', component: SignupPage },
     { path: '/login', component: LoginPage },
-    { path: '/admin', component: AdminDashboard }
+    {
+      path: '/admin',
+      component: AdminDashboard,
+      children: [
+        { path: 'users', component: UsersManagement },
+        { path: 'products', component: ProductsManagement },
+        { path: 'categories', component: CategoriesManagement },
+        { path: 'orders', component: OrdersManagement }
+      ]
+    }
   ]
 });
 

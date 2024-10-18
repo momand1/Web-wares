@@ -72,6 +72,7 @@ export default new Vuex.Store({
     ],
     cart: [],
     isLoggedIn: true,  
+    
   },
   mutations: { // mutations is for making changes in state
     LOGIN(state) {
@@ -117,6 +118,7 @@ export default new Vuex.Store({
     updateCartItemQuantity({ commit }, { id, quantity }) {
       commit('UPDATE_CART_ITEM_QUANTITY', { id, quantity });
     }
+
   },
   getters: { // getters is for getting data from state
     produits: state => state.produits,
@@ -130,6 +132,9 @@ export default new Vuex.Store({
     cartTotalTTC: (state, getters) => {
       const taxRate = 1.20; // Taxe de 20%
       return (getters.cartTotalHT * taxRate).toFixed(2);
+    },
+    totalHT: state => {
+      return state.cart.reduce((item)=>(item.prix * item.quantity),1).toFixed(2);
     }
   }
 });

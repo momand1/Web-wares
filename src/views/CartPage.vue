@@ -20,7 +20,6 @@
           :item="item"
           @remove-from-cart="removeFromCart"
           @update-quantity="updateCartItemQuantity"
-
         />
       </tbody>
     </table>
@@ -48,10 +47,11 @@ export default {
     CartSummary
   },
   computed: {
-    ...mapGetters(['cartItems', 'cartTotalHT', 'cartTotalTTC','deliveryCost'])
+    ...mapGetters(['cartItems','totalHT', 'cartTotalHT', 'cartTotalTTC']),
+   
   },
   methods: {
-    ...mapMutations(['REMOVE_FROM_CART']),
+    ...mapMutations(['REMOVE_FROM_CART','UPDATE_CART_ITEM_QUANTITY']),
     removeFromCart(productId) {
       this.REMOVE_FROM_CART(productId);
     },
