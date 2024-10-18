@@ -73,6 +73,7 @@ export default new Vuex.Store({
     cart: [],
     isLoggedIn: true,  
     
+    
   },
   mutations: { // mutations is for making changes in state
     LOGIN(state) {
