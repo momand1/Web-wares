@@ -5,12 +5,12 @@
         <img src="../assets/logo.png" alt="logo" class="logo ms-4" />
       </router-link>
     </div>
-    <div class="burger-menu" @click="toggleMenu" :class="{ 'open': isMenuOpen }">
+    <div class="burger-menu" @click="toggleMenu" :class="{ open: isMenuOpen }">
       <div class="bar"></div>
       <div class="bar"></div>
       <div class="bar"></div>
     </div>
-    <div class="navbar-container" :class="{ 'active': isMenuOpen }">
+    <div class="navbar-container" :class="{ active: isMenuOpen }">
       <ul class="navbar-links">
         <li><router-link to="/" @click="closeMenu">Accueil</router-link></li>
 
@@ -18,38 +18,46 @@
         <li
           class="dropdown"
           @click="toggleDropdown"
-          :class="{ 'active': showDropdown }"
+          :class="{ active: showDropdown }"
         >
           <span>
-            <router-link to="/ProductsListPage" @click="closeMenu">Produits</router-link>
+            <router-link to="/ProductsListPage" @click="closeMenu"
+              >Produits</router-link
+            >
           </span>
           <ul v-if="showDropdown" class="dropdown-menu">
-            <li><router-link :to="{ path: '/ProductsListPage', query: { category: '1' }}" @click="closeMenu">Catégorie 1</router-link></li>
-            <li><router-link :to="{ path: '/ProductsListPage', query: { category: '2' }}" @click="closeMenu">Catégorie 2</router-link></li>
-            <li><router-link :to="{ path: '/ProductsListPage', query: { category: '3' }}" @click="closeMenu">Catégorie 3</router-link></li>
-            <li><router-link :to="{ path: '/ProductsListPage', query: { category: '4' }}" @click="closeMenu">Catégorie 4</router-link></li>
+            <li v-for="item in categorie" :key="item.id">
+              <router-link
+                :to="{
+                  path: '/ProductsListPage',
+                  query: { category: item.id },
+                }"
+                @click="closeMenu"
+                >{{ item.name }}</router-link
+              >
+            </li>
           </ul>
         </li>
-      
+
         <li><router-link to="/cart" @click="closeMenu">Panier</router-link></li>
-        <li><router-link to="/checkout" @click="closeMenu">Caisse</router-link></li>
+
         <li><router-link to="/admin" @click="closeMenu">Admin</router-link></li>
       </ul>
     </div>
     <div class="text-end me-5 mb-4">
-      <div class="d-flex align-items-center pt-4" id="logs">
-        <img src="../assets/user.png" alt="User Icon" class="icon" />
-        <a href="/login" class="btn btn-link" @click="closeMenu">Connexion</a>
-      </div>
-      <div class="d-flex align-items-center pt-4" id="logs">
-        <img src="../assets/signup.png" alt="Sign Up Icon" class="icon" />
-        <a href="/signup" class="btn btn-link" @click="closeMenu">Inscription</a>
-      </div>
-    </div>
+  <div class="d-flex align-items-center pt-4" id="logs">
+    <img src="../assets/user.png" alt="User Icon" class="icon" />
+    <a href="/login" class="btn btn-link" @click="closeMenu">Connexion</a>
+    <img src="../assets/signup.png" alt="Sign Up Icon" class="icon ms-3" />
+    <a href="/signup" class="btn btn-link" @click="closeMenu">Inscription</a>
+  </div>
+</div>
+
   </nav>
 </template>
 
 <script>
+import { mapGetters, mapActions } from "vuex";
 export default {
   data() {
     return {
@@ -68,11 +76,30 @@ export default {
     toggleDropdown() {
       this.showDropdown = !this.showDropdown;
     },
+    ...mapActions(["chargerCategorie"]),
+  },
+  computed: {
+    ...mapGetters(["categorie"]),
+  },
+  mounted() {
+    this.chargerCategorie();
   },
 };
 </script>
 
 <style scoped>
+.d-flex {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Space between the items */
+  margin-bottom: 10px;
+}
+
+#logs .icon {
+  width: 40px;
+  height: auto;
+  margin-bottom: 0; /* Align icons with the text */
+}
 .logo {
   width: 50px;
   height: 50px;
@@ -207,6 +234,10 @@ export default {
 }
 
 @media screen and (max-width: 768px) {
+  .navbar-container.active .d-flex{
+    justify-content: space-between;
+    width: 100%
+  }
   .burger-menu {
     display: flex;
   }

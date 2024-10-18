@@ -1,5 +1,15 @@
 import Vuex from 'vuex';
 
+// Fonction utilitaire pour chiffrer les mots de passe (simulation)
+function hashPassword(password) {
+  // Cette fonction doit être faite côté backend avec bcrypt ou une autre librairie de chiffrement
+  return password.split('').reverse().join(''); // Simple inversion des caractères pour simuler un hash
+}
+
+// Récupérer les utilisateurs inscrits et connectés depuis le localStorage
+const savedUsers = JSON.parse(localStorage.getItem('users')) || [];
+const savedLoggedUsers = JSON.parse(localStorage.getItem('loggedUsers')) || [];
+
 export default new Vuex.Store({
   state: {
     categories: [
@@ -72,8 +82,9 @@ export default new Vuex.Store({
     ],
     cart: [],
     isLoggedIn: true,
-    currentUser: null,
-    orders: []
+    currentUser: savedLoggedUsers.length ? savedLoggedUsers[0] : null,
+    utilisateurss: savedUsers,
+    categorie: []
   },
   mutations: {
     LOGIN(state) {
@@ -98,12 +109,16 @@ export default new Vuex.Store({
     },
     ADD_USER(state, newUser) {
       state.utilisateurs.push(newUser);
+      localStorage.setItem('users', JSON.stringify(state.utilisateurs))
     },
     SET_CURRENT_USER(state, user) {
       state.currentUser = user;
+      const loggedUsers = [user];
+      localStorage.setItem('loggedUsers', JSON.stringify(loggedUsers));
     },
     LOGOUT_USER(state) {
       state.currentUser = null;
+      localStorage.removeItem('loggedUsers');
     },
     SET_CART_ITEMS(state, items) {
       state.cartItems = items;
@@ -154,6 +169,9 @@ export default new Vuex.Store({
       if (order) {
         order.delivered = true;
       }
+    },
+    setCategorie(state, items) {
+      state.categorie = items;
     }
   },
   actions: {
@@ -170,19 +188,43 @@ export default new Vuex.Store({
       const existingUser = state.utilisateurs.find(user => user.email === userData.email);
       if (existingUser) {
         throw new Error('Cet utilisateur existe déjà.');
-      } else {
-        commit('ADD_USER', userData);
       }
+      const siretRegex = /^\d{14}$/;
+      if (!siretRegex.test(userData.siret)) {
+        throw new Error('Le numéro de SIRET doit comporter exactement 14 chiffres.');
+      }
+      const codePostalRegex = /^\d{5}$/;
+      if (!codePostalRegex.test(userData.codePostal)) {
+        throw new Error('Le code postal doit comporter exactement 5 chiffres.');
+      }
+      const hashedPassword = hashPassword(userData.motDePasse);
+      const newUser = {
+        ...userData,
+        motDePasse: hashedPassword,
+        role: 'USER'
+      };
+
+      commit('ADD_USER', newUser);
     },
     loginUser({ commit, state }, { email, password }) {
-      const user = state.utilisateurs.find(user => user.email === email && user.motDePasse === password);
-      if (user) {
-        commit('SET_CURRENT_USER', user);
-        return true;
-      } else {
-        throw new Error('Email ou mot de passe incorrect.');
+      const user = state.utilisateurs.find(user => user.email === email);
+      if (!user) {
+        throw new Error('Email incorrect.');
       }
+
+      const hashedPassword = hashPassword(password);
+      if (user.motDePasse !== hashedPassword) {
+        throw new Error('Mot de passe incorrect.');
+      }
+
+      commit('SET_CURRENT_USER', user);
+      return true;
     },
+
+    logoutUser({ commit }) {
+      commit('LOGOUT_USER');
+    },
+
     updateCartItemQuantity({ commit }, { id, quantity }) {
       commit('UPDATE_CART_ITEM_QUANTITY', { id, quantity });
     },
@@ -209,6 +251,16 @@ export default new Vuex.Store({
     },
     markOrderDelivered({ commit }, orderId) {
       commit('MARK_ORDER_DELIVERED', orderId);
+    },
+    async chargerCategorie({ commit }) {
+      // If you don't need the items, remove this part entirely
+      const items = [
+        { id: 1, name: 'Mobilier d\'intérieur' },
+        { id: 2, name: 'Luminaires' },
+        { id: 3, name: 'Tapis' },
+        { id: 4, name: 'Objets de décorations' }
+      ];
+      commit('setCategorie', items);
     }
   },
   getters: {
@@ -224,6 +276,8 @@ export default new Vuex.Store({
       const taxRate = 1.20; // Taxe de 20%
       return (getters.cartTotalHT * taxRate).toFixed(2);
     },
-    orders: state => state.orders
+    categorie: state => state.categorie,
+    currentUser: state => state.currentUser,
+    utilisateurs: state => state.utilisateurs
   }
 });

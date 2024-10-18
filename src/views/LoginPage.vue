@@ -3,41 +3,77 @@
     <div class="form-container">
       <h1>Connexion</h1>
       <form @submit.prevent="login">
-        <div class="input-group">
-          <label>Email</label>
-          <input type="email" v-model="email" required placeholder="Entrez votre email" />
+        <div class="form-group">
+          <label>Email ou SIRET</label>
+          <input type="text" v-model="emailOrSiret" @input="validateEmailOrSiret" required placeholder="Entrez votre email ou SIRET" />
+          <small v-if="errors.emailOrSiret" class="error">{{ errors.emailOrSiret }}</small>
         </div>
-        <div class="input-group">
+
+        <div class="form-group">
           <label>Mot de passe</label>
-          <input type="password" v-model="password" required placeholder="Entrez votre mot de passe" />
+          <input type="password" v-model="password" @input="validatePassword" required placeholder="Entrez votre mot de passe" />
+          <small v-if="errors.password" class="error">{{ errors.password }}</small>
           <small v-if="loginError" class="error">{{ loginError }}</small>
         </div>
-        <button type="submit" class="submit-btn">Se connecter</button>
+
+        <button type="submit" class="submit-btn" :disabled="hasErrors">Se connecter</button>
       </form>
     </div>
   </div>
 </template>
 
 <script>
-import { mapActions } from 'vuex';
-
 export default {
   data() {
     return {
-      email: '',
+      emailOrSiret: '',
       password: '',
-      loginError: null
+      loginError: null,
+      errors: {
+        emailOrSiret: '',
+        password: ''
+      }
     };
   },
+  computed: {
+    hasErrors() {
+      return Object.values(this.errors).some(error => error !== '');
+    }
+  },
   methods: {
-    ...mapActions(['loginUser']),
-    async login() {
-      try {
-        await this.loginUser({ email: this.email, password: this.password });
-        alert("Connexion réussie");
+    validateEmailOrSiret() {
+      if (this.emailOrSiret === '') {
+        this.errors.emailOrSiret = 'Ce champ est obligatoire.';
+      } else {
+        this.errors.emailOrSiret = '';
+      }
+    },
+    validatePassword() {
+      if (this.password.length < 8) {
+        this.errors.password = 'Le mot de passe doit contenir au moins 8 caractères.';
+      } else {
+        this.errors.password = '';
+      }
+    },
+    login() {
+      if (!this.hasErrors) {
+        const utilisateurs = JSON.parse(localStorage.getItem('utilisateurs')) || [];
+        const user = utilisateurs.find(user => user.email === this.emailOrSiret || user.siret === this.emailOrSiret);
+
+        if (!user) {
+          this.loginError = "Utilisateur non trouvé.";
+          return;
+        }
+
+        const hashedPassword = btoa(this.password);
+        if (user.motDePasse !== hashedPassword) {
+          this.loginError = 'Mot de passe incorrect.';
+          return;
+        }
+
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        alert('Connexion réussie');
         this.$router.push('/');
-      } catch (error) {
-        this.loginError = error.message;
       }
     }
   }
@@ -46,58 +82,56 @@ export default {
 
 <style scoped>
 .login-page {
+  background-image: url('@/assets/LoginPagebackground.jpg');
+  background-size: cover;
+  background-position: center;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
-  background-image: url('@/assets/LoginPagebackground.jpg'); /* Image LoginPagebackground */
-  background-size: cover;
-  background-position: center;
 }
 
 .form-container {
-  background: white;
-  padding: 2rem;
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 20px;
   border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   max-width: 400px;
   width: 100%;
-  transition: transform 0.3s ease;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-.form-container:hover {
-  transform: translateY(-5px);
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-h1 {
-  text-align: center;
-  margin-bottom: 1.5rem;
-  font-size: 1.8rem;
-  color: #333;
-}
-
-.input-group {
-  margin-bottom: 1.2rem;
+.form-group {
+  display: flex;
+  flex-direction: column;
 }
 
 label {
-  display: block;
-  margin-bottom: 0.5rem;
-  font-weight: bold;
+  margin-bottom: 8px;
 }
 
 input {
-  width: 100%;
-  padding: 0.8rem;
+  padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
-  font-size: 1rem;
-  transition: border-color 0.3s ease;
 }
 
-input:focus {
-  border-color: #007bff;
-  outline: none;
+button {
+  padding: 12px;
+  background-color: #5cb85c;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #4cae4c;
 }
 
 .error {
@@ -105,19 +139,10 @@ input:focus {
   font-size: 0.85rem;
 }
 
-.submit-btn {
-  width: 100%;
-  padding: 1rem;
-  background-color: #007bff;
-  color: white;
-  font-weight: bold;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+/* Responsive styling */
+@media (max-width: 768px) {
+  .form-container {
+    padding: 15px;
+  }
 }
-
-.submit-btn:hover {
-  background-color: #0056b3;
-}
-</style>
+</style> 
