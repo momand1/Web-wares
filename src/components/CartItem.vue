@@ -13,10 +13,10 @@
             />
     </td>
     <td>{{ item.prix }} €</td>
-    <td>{{ (item.prix * item.quantity).toFixed(2) }} €</td> <!-- Total par produit -->
+    <td>{{ totalHT }} €</td> <!-- Total par produit -->
 
     <td>
-      <button @click="removeFromCart(item.id)">  <i class="fas fa-trash"></i></button>
+      <button @click="removeFromCart(item.id)"><i class="fas fa-trash"></i></button>
     </td>
   </tr>
 </template>
@@ -27,14 +27,18 @@ export default {
     item: {
       type: Object,
       required: true
+    },
+    totalHT: {
+      type: Number,
+      required: true
     }
   },
   methods: {
     removeFromCart(productId) {
       this.$emit('remove-from-cart', productId);
     },
-    updateQuantity(id, newQuantity) {
-      this.$emit('update-quantity', { id, quantity: Number(newQuantity) });
+    updateQuantity(productId, quantity) {
+      this.$emit('update-quantity', { productId, quantity: Number(quantity) });
     },
   }
 };
