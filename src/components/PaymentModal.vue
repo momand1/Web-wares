@@ -1,3 +1,4 @@
+
 <template>
     <div class="modal-backdrop">
       <div class="modal-dialog">
@@ -54,7 +55,7 @@
                   required
                 />
               </div>
-              <button type="submit" class="btn btn-primary btn-block">Payer</button>
+              <button type="submit" class="btn btn-primary btn-block" @click="placeOrder" >Payer</button>
             </form>
           </div>
         </div>
@@ -75,10 +76,10 @@
       };
     },
     methods: {
-      submitPayment() {
-        // Simuler le traitement du paiement
-        alert('Paiement soumis avec succès!');
-        this.$emit('close'); // Fermer la fenêtre de paiement après soumission
+     
+      placeOrder() {
+      this.$store.dispatch('placeOrder');
+      alert('Commande passée avec succès !');
       }
     }
   };

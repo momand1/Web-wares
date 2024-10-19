@@ -81,10 +81,12 @@ export default new Vuex.Store({
       }
     ],
     cart: [],
+    cartItems: [],
     isLoggedIn: true,
     currentUser: savedLoggedUsers.length ? savedLoggedUsers[0] : null,
     utilisateurss: savedUsers,
-    categorie: []
+    categorie: [],
+    orders: []
   },
   mutations: {
     LOGIN(state) {
@@ -107,6 +109,12 @@ export default new Vuex.Store({
     CLEAR_CART(state) {
       state.cart = [];
     },
+    UPDATE_CART_ITEM_QUANTITY(state, { id, quantity }) {
+      const item = state.cartItems.find(item => item.id === id);
+      if (item) {
+        item.quantity = quantity; // Met à jour la quantité de l'élément
+      }
+    },
     ADD_USER(state, newUser) {
       state.utilisateurs.push(newUser);
       localStorage.setItem('users', JSON.stringify(state.utilisateurs))
@@ -122,12 +130,6 @@ export default new Vuex.Store({
     },
     SET_CART_ITEMS(state, items) {
       state.cartItems = items;
-    },
-    UPDATE_CART_ITEM_QUANTITY(state, { id, quantity }) {
-      const item = state.cartItems.find(item => item.id === id);
-      if (item) {
-        item.quantity = quantity; // Met à jour la quantité
-      }
     },
     TOGGLE_USER_ROLE(state, userId) {
       const user = state.utilisateurs.find(user => user.id === userId);
@@ -164,11 +166,14 @@ export default new Vuex.Store({
     ADD_ORDER(state, order) {
       state.orders.push(order);
     },
-    MARK_ORDER_DELIVERED(state, orderId) {
-      const order = state.orders.find(order => order.id === orderId);
+    UPDATE_ORDER_STATUS(state, { orderId, status }) {
+      const order = state.orders.find(o => o.id === orderId);
       if (order) {
-        order.delivered = true;
+        order.status = status;
       }
+    },
+    DELETE_ORDER(state, orderId) {
+      state.orders = state.orders.filter(order => order.id !== orderId);
     },
     setCategorie(state, items) {
       state.categorie = items;
@@ -261,6 +266,24 @@ export default new Vuex.Store({
         { id: 4, name: 'Objets de décorations' }
       ];
       commit('setCategorie', items);
+    },
+    placeOrder({ commit, state }) {
+      const newOrder = {
+        id: Date.now(),
+        items: state.cart,
+        totalPrice: state.cart.reduce((acc, item) => acc + item.prix * item.quantity, 0),
+        date: new Date().toLocaleDateString(),
+        status: 'En attente', // Statut par défaut
+        user: state.utilisateurss.raisonSociale
+      };
+      commit('ADD_ORDER', newOrder);
+      commit('CLEAR_CART');
+    },
+    updateOrderStatus({ commit }, { orderId, status }) {
+      commit('UPDATE_ORDER_STATUS', { orderId, status });
+    },
+    deleteOrder({ commit }, orderId) {
+      commit('DELETE_ORDER', orderId);
     }
   },
   getters: {
@@ -268,6 +291,7 @@ export default new Vuex.Store({
     totalItemsInCart(state) {
       return state.cart.reduce((sum, item) => sum + item.quantity, 0);
     },
+    
     cartItems: state => state.cart,
     cartTotalHT: state => {
       return state.cart.reduce((total, item) => total + item.prix * item.quantity, 0).toFixed(2);
@@ -278,6 +302,7 @@ export default new Vuex.Store({
     },
     categorie: state => state.categorie,
     currentUser: state => state.currentUser,
-    utilisateurs: state => state.utilisateurs
+    utilisateurs: state => state.utilisateurs,
+    allOrders: state => state.orders
   }
 });

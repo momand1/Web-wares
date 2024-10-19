@@ -4,12 +4,13 @@
       <h2 class="text-center my-4">
         <i class="fas fa-shopping-cart"></i> Gestion des commandes
       </h2>
-      <table class="table table-striped">
+      <table class="table table-striped" v-if="orders.length">
         <thead>
           <tr>
             <th>ID</th>
-            <th>Client</th>
-            <th>Montant</th>
+            <th>Date</th>
+            <th>Raison Sociale </th>
+            <th>Total</th>
             <th>Statut</th>
             <th></th>
           </tr>
@@ -17,47 +18,90 @@
         <tbody>
           <tr v-for="order in orders" :key="order.id">
             <td>{{ order.id }}</td>
-            <td>{{ order.client }}</td>
-            <td>{{ order.amount }} €</td>
-            <td>{{ order.status }}</td>
+            <td>{{ order.date }}</td>
+            <td>{{ order.user }}</td>
+            <td>{{ order.totalPrice}} €</td>
+            <td> 
+              <select v-model="order.status" @change="updateStatus(order.id, order.status)">
+                <option value="En attente">En attente</option>
+                <option value="En cours">En cours</option>
+                <option value="Expédié">Expédié</option>
+                <option value="Livré">Livré</option>
+              </select>
+            </td>
             <td>
-              <button class="btn " @click="voirDetails(order.id)">
+              <button class="btn " @click="viewOrderDetails(order)">
                 <i class="fas fa-eye"></i> 
               </button>
-              <button class="btn " @click="annulerCommande(order.id)">
+              <button class="btn " @click="cancelOrder(order.id)">
                 <i class="fas fa-ban"></i> 
               </button>
             </td>
           </tr>
         </tbody>
       </table>
-    </div>
+      <p v-else>Aucune commande passée</p>
+
+      <div v-if="selectedOrder" class="order-details-modal">
+        <h2>Détails de la commande #{{ selectedOrder.id }}</h2>
+        <p><strong>Utilisateur :</strong> {{ selectedOrder.user }}</p> <!-- Ajout du nom de l'utilisateur -->
+        <p><strong>Date de la commande :</strong> {{ selectedOrder.date }}</p>
+        <p><strong>Total :</strong> {{ selectedOrder.totalPrice }}€</p>
+        <h3>Produits commandés :</h3>
+        <ul>
+          <li v-for="item in selectedOrder.items" :key="item.titre">
+            {{ item.titre }} - {{ item.prix }}€ x {{ item.quantity }}
+          </li>
+        </ul>
+        <h3>Statut actuel :</h3>
+        <p>{{ selectedOrder.status }}</p>
+        <button @click="closeOrderDetails">Fermer</button>
+      </div>
+  </div>  
   </template>
   
-  <script>
-  export default {
-    name: 'OrdersManagement',
-    data() {
-      return {
-        orders: [
-          { id: 1, client:'alice', amount: 150 ,status:'livré'},
-          { id: 2,  client:'jean', amount: 230 ,status:'en cours de traitement'}], // Remplir avec les données de commandes
-      };
+<script>
+export default {
+  data() {
+    return {
+      selectedOrder: null
+    };
+  },
+  computed: {
+    orders() {
+      return this.$store.getters.allOrders;
+    }
+  },
+  methods: {
+    viewOrderDetails(order) {
+      this.selectedOrder = order;
     },
-    methods: {
-      voirDetails(//id
-      ) {
-        // Logique pour voir les détails d'une commande
-      },
-      annulerCommande(//id
-      ) {
-        // Logique pour annuler une commande
-      },
+    closeOrderDetails() {
+      this.selectedOrder = null;
     },
-  };
-  </script>
+    updateStatus(orderId, status) {
+      this.$store.dispatch('updateOrderStatus', { orderId, status });
+    },
+    cancelOrder(orderId) {
+      if (confirm('Êtes-vous sûr de vouloir annuler cette commande ?')) {
+        this.$store.dispatch('deleteOrder', orderId);
+        alert('Commande annulée avec succès');
+      }
+    }
+  }
+};
+</script>
   
   <style scoped>
+  .order-details-modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
   .container {
     padding: 20px;
   }
