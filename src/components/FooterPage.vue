@@ -1,19 +1,13 @@
 <template>
-  <footer class="footer">
+  <!-- Footer -->
+<footer class="footer">
     <div class="container">
-      <!-- Newsletter Signup Section -->
-      <div class="newsletter">
-        <h5>Inscription à la newsletter</h5>
-        <form @submit.prevent="subscribe">
-          <input type="email" class="form-control mb-2" id="exampleFormControlInput1" placeholder="name@example.com" required>
-          <button type="submit">Je m'inscris</button>
-        </form>
-      </div>
+
 
       <!-- Social Media, Payment Methods, and Delivery Methods Section -->
-      <div class="footer-links">
+      <div class="footer-links big-footer-bottom">
         
-        <div class="column">
+        <div class="column footer-top ">
           <h5>Moyens de paiement</h5>
           <ul>
             <li> <img src="../assets/paiement/visa.png" alt="Visa" class="icon"> </li>
@@ -23,7 +17,7 @@
           </ul>
         </div>
 
-        <div class="column">
+        <div class="column footer-top ms-5 me-5">
           <h5>Suivez-nous sur les réseaux !</h5>
           <ul>
             <li>
@@ -38,16 +32,36 @@
           </ul>
         </div>
         
-        <div class="column">
+        <div class="column footer-top">
           <h5>Moyens de livraison</h5>
           <ul>
-            <li> <img src="../assets/dhl.png" alt="DHL" class="logo small"> </li>
+            <li> <img src="../assets/dhl.png" alt="DHL" class="small"> </li>
             <li> <img src="../assets/ups.png" alt="UPS" class="logo ms-2 me-2"> </li>
-            <li> <img src="../assets/fedex.png" alt="fedex" class="logo small"> </li>
+            <li> <img src="../assets/fedex.png" alt="fedex" class="small"> </li>
           </ul>
         </div>
       </div>
 
+      <!-- truspilot rating -->
+
+<div class="banner-row">
+        <!-- Trustpilot Column -->
+        <div class="trustpilot-column">
+            <img src="../assets/trustpilot.png" alt="Trustpilot" width="130" height="90" class="pb-3 pe-2">
+            <p><span>Nos clients adorent Web Wares et nous le disent :</span><br>
+              <strong>4,1 étoiles sur 5</strong> (8,372 avis clients)</p>
+        </div>
+        <!-- App Store Column -->
+        <div class="app-column">
+            <a href="#"><img src="../assets/app-store.png" alt="App Store" width="40"></a>
+            <a href="#"><img src="../assets/app.png" alt="Google Play" width="40"></a>
+            <p>Téléchargez l'appli Web Wares</p>
+        </div>
+        
+    </div>
+    <br>
+
+<!-- fin truspilot -->
 
       <!-- Legal Links Section -->
       <div>
@@ -61,23 +75,13 @@
       </div>
     </div>
   </footer>
+
+  <!-- Fin footer -->
 </template>
 
 
-<script>
-export default {
-  name: 'FooterPage',
-  methods: {
-    subscribe() {
-      alert('Inscription à la newsletter réussie !');
-    }
-  }
-}
-</script>
 
 <style scoped>
-
-
 .container {
   max-width: 1200px;
   margin: 0 auto;
@@ -140,6 +144,20 @@ a:hover {
   text-align: center;
 }
 
+.footer-top {
+  width: 100%;
+  border-top: 1px solid #ccc;
+  padding-top: 10px;
+  text-align: center;
+}
+
+.big-footer-bottom {
+  width: 100%;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 10px;
+  text-align: center;
+}
+
 
 .logo {
   width: 50px; /* Adjust as needed */
@@ -148,7 +166,7 @@ a:hover {
 
 .small {
   width: 60px;
-  height: 80px;
+  height: 70px;
 }
 
 .legal-links {
@@ -186,4 +204,54 @@ img {
   max-width: 100%; /* Permet aux images de rester dans les limites de leur conteneur */
   height: auto; /* Maintient le rapport d'aspect */
 }
+
+/* Style pour banner truspilot */
+.banner-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f0f0f0;
+            border-top: 1px solid #ddd;
+            border-bottom: 1px solid #ddd;
+            width: 100%;
+            max-width: 100%;
+            margin: 0 auto;
+        }
+
+        .trustpilot-column, .app-column {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .trustpilot-column img {
+            margin-right: 10px;
+        }
+
+        .app-column img {
+            margin-left: 10px;
+        }
+
+        .app-column {
+            gap: 10px;
+        }
+
+        .banner-row p {
+            margin: 0;
+            font-size: 16px;
+            color: #333;
+        }
+
 </style>
+
+
+<script>
+export default {
+  methods: {
+    subscribe() {
+      alert('Inscription à la newsletter réussie !');
+    }
+  }
+}
+</script>

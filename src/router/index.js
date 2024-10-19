@@ -10,9 +10,9 @@ import LoginPage from '@/views/LoginPage.vue';
 
 
 
-import AdminDashboard from '../components/AdminDashboard.vue';
+import AdminDashboard from '../components/AdminDasboard.vue';
 import UsersManagement from '../components/UsersManagement.vue';
-import ProductsManagement from '../components/ProductsManagement.vue';
+import ProductsManagement from '../components/ProductManagement.vue';
 import CategoriesManagement from '../components/CategoriesManagement.vue';
 import OrdersManagement from '../components/OrdersManagement.vue';
 

@@ -9,7 +9,8 @@
           <th scope="col">Produit</th>
           <th scope="col">Quantité</th>
           <th scope="col">Prix HT</th>
-         <th scope="col">Total HT</th>
+          <th scope="col">Total HT</th>
+          <th scope="col">Total TTC</th>
           <th scope="col"></th>
         </tr>
       </thead>
@@ -19,7 +20,7 @@
           :key="item.id"
           :item="item"
           @remove-from-cart="removeFromCart"
-          @update-quantity="updateCartItemQuantity"
+          @update-quantity="updateQuantity"
         />
       </tbody>
     </table>
@@ -47,7 +48,7 @@ export default {
     CartSummary
   },
   computed: {
-    ...mapGetters(['cartItems','totalHT', 'cartTotalHT', 'cartTotalTTC']),
+    ...mapGetters(['cartItems','cartTotalHT', 'cartTotalTTC']),
    
   },
   methods: {
@@ -59,7 +60,7 @@ export default {
       // Logique pour passer à la caisse
       alert('Passer à la caisse');
     },
-      updateQuantity(id, quantity) {
+    updateQuantity(id, quantity) {
       // Vérifie que la quantité est valide
       if (quantity < 0) {
         quantity = 0; // Empêche d'avoir des quantités négatives
