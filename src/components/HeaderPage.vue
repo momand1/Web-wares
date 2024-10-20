@@ -13,49 +13,44 @@
     <div class="navbar-container" :class="{ active: isMenuOpen }">
       <ul class="navbar-links">
         <li><router-link to="/" @click="closeMenu">Accueil</router-link></li>
-
-        <!-- Dropdown Menu -->
-        <li
-          class="dropdown"
-          @click="toggleDropdown"
-          :class="{ active: showDropdown }"
-        >
+        <li class="dropdown" @click="toggleDropdown" :class="{ active: showDropdown }">
           <span>
-            <router-link to="/ProductsListPage" @click="closeMenu"
-              >Produits</router-link
-            >
+            <router-link to="/ProductsListPage" @click="closeMenu">Produits</router-link>
           </span>
           <ul v-if="showDropdown" class="dropdown-menu">
             <li v-for="item in categorie" :key="item.id">
               <router-link
-                :to="{
-                  path: '/ProductsListPage',
-                  query: { category: item.id },
-                }"
+                :to="{ path: '/ProductsListPage', query: { category: item.id } }"
                 @click="closeMenu"
-                >{{ item.name }}</router-link
-              >
+              >{{ item.name }}</router-link>
             </li>
           </ul>
         </li>
-        <li><router-link to="/admin" @click="closeMenu">Admin</router-link></li>
-        <li><router-link to="/cart" @click="closeMenu"><i class="fas fa-shopping-cart"></i> </router-link></li>
+        
+        <!-- Show Admin link only if logged in -->
+        <li ><router-link to="/admin" @click="closeMenu">Admin</router-link></li>
+        
+        <!-- Show Panier link regardless of login status -->
+        <li ><router-link to="/cart" @click="closeMenu"><i class="fas fa-shopping-cart"></i> Panier</router-link></li>
+
       </ul>
     </div>
     <div class="text-end me-5 mb-4">
-  <div class="d-flex align-items-center pt-4" id="logs">
-    <img src="../assets/user.png" alt="User Icon" class="icon" />
-    <a href="/login" class="btn btn-link" @click="closeMenu">Connexion</a>
-    <img src="../assets/signup.png" alt="Sign Up Icon" class="icon ms-3" />
-    <a href="/signup" class="btn btn-link" @click="closeMenu">Inscription</a>
-  </div>
-</div>
-
+      <div class="d-flex align-items-center pt-4" id="logs">
+        <img src="../assets/user.png" alt="User Icon" class="icon" />
+        <a href="/login" class="btn btn-link" @click="closeMenu" v-if="!isLoggedIn">Connexion</a>
+        <img src="../assets/signup.png" alt="Sign Up Icon" class="icon ms-3" />
+        <a href="/signup" class="btn btn-link" @click="closeMenu" v-if="!isLoggedIn">Inscription</a>
+        <span v-if="isLoggedIn" @click="logout" class="btn btn-link">Déconnexion</span>
+      </div>
+    </div>
   </nav>
 </template>
 
+
 <script>
 import { mapGetters, mapActions } from "vuex";
+
 export default {
   data() {
     return {
@@ -74,10 +69,11 @@ export default {
     toggleDropdown() {
       this.showDropdown = !this.showDropdown;
     },
+    
     ...mapActions(["chargerCategorie"]),
   },
   computed: {
-    ...mapGetters(["categorie"]),
+    ...mapGetters(["categorie", "isLoggedIn"]),
   },
   mounted() {
     this.chargerCategorie();
@@ -98,6 +94,7 @@ export default {
   height: auto;
   margin-bottom: 0; /* Align icons with the text */
 }
+
 .logo {
   width: 50px;
   height: 50px;
@@ -148,6 +145,7 @@ export default {
   text-decoration: none;
   transition: color 0.3s ease, background-color 0.3s ease;
 }
+
 .navbar-links a:hover {
   color: #333;
   background-color: rgb(240, 240, 158);
@@ -232,9 +230,9 @@ export default {
 }
 
 @media screen and (max-width: 768px) {
-  .navbar-container.active .d-flex{
+  .navbar-container.active .d-flex {
     justify-content: space-between;
-    width: 100%
+    width: 100%;
   }
   .burger-menu {
     display: flex;

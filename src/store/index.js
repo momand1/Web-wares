@@ -88,7 +88,8 @@ state: {
     currentUser: savedLoggedUsers.length ? savedLoggedUsers[0] : null,
     utilisateurss: savedUsers,
     categorie: [],
-    orders: []
+    orders: [],
+    
   },
 
 mutations: {
@@ -155,7 +156,9 @@ mutations: {
       state.produits = state.produits.filter(product => product.id !== productId);
     },
     ADD_CATEGORY(state, category) {
+      
       state.categories.push(category);
+      
     },
     UPDATE_CATEGORY(state, updatedCategory) {
       const index = state.categories.findIndex(cat => cat.id === updatedCategory.id);
@@ -176,8 +179,15 @@ mutations: {
         order.delivered = true;
       }
     },
+    SET_CATEGORIES(state, categories) {
+      state.categories = categories;
+    },
     setCategorie(state, items) {
       state.categorie = items;
+    },
+    
+    DELETE_CATEGORY(state, categoryId) {
+      state.categories = state.categories.filter(cat => cat.id !== categoryId);
     },
     DELETE_ORDER(state, orderId) {
       state.orders = state.orders.filter(order => order.id !== orderId);
@@ -294,7 +304,25 @@ actions: {
     },
     deleteOrder({ commit }, orderId) {
       commit('DELETE_ORDER', orderId);
-    }
+    },
+    fetchCategories({ commit }) {
+      // Simuler la récupération des données (remplacer par un appel API réel)
+      const categories = [
+        { id: 1, name: 'Mobilier d\'intérieur' },
+        { id: 2, name: 'Luminaires' },
+        { id: 3, name: 'Tapis' },
+        { id: 4, name: 'Objets de décorations' }
+      ];
+      commit('SET_CATEGORIES', categories);
+    },
+  
+    createCategory({ commit, state }, categoryData) {
+      // Generate a new ID based on the highest existing ID
+      const newId = state.categories.length > 0 ? Math.max(...state.categories.map(cat => cat.id)) + 1 : 1;
+
+      const newCategory = { id: newId, ...categoryData }; // Add ID to new category
+      commit('ADD_CATEGORY', newCategory); // Commit the mutation to add the category
+    },
   },
   
 
@@ -314,6 +342,8 @@ getters: {
     categorie: state => state.categorie,
     currentUser: state => state.currentUser,
     utilisateurs: state => state.utilisateurs,
-    allOrders: state => state.orders
+    allOrders: state => state.orders,
+    isLoggedIn: state => !!state.currentUser,
+    categories: (state) => state.categories,
   }
 });

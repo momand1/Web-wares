@@ -20,7 +20,7 @@ import OrdersManagement from '../components/OrdersManagement.vue';
 const router = createRouter({
   history: createWebHistory(),
   routes: [
-    { path: '/', component: LandingPage },
+    { path: '/', component: LandingPage, name: "Home" },
     { path: '/ProductsListPage', component: ProductsListPage },
     { path: '/ProductDetails/:id', component: ProductDetails, name: 'ProductDetails' },
     { path: '/ProductDetails', component: ProductDetails, name: 'ProductDetailsList' }, // Add this line for general product list

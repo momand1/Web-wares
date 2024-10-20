@@ -81,7 +81,7 @@ export default {
 
         localStorage.setItem('currentUser', JSON.stringify(user));
         alert('Connexion réussie');
-        this.$router.push('/');
+        this.$router.push({ name: 'Home' });
       }
     }
   }
