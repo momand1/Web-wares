@@ -1,8 +1,8 @@
 <template>
   <nav class="navbar">
     <div class="navbar-logo">
-      <router-link to="">
-        <img src="../assets/logo.png" alt="logo" class="logo ms-4" />
+      <router-link to="/">
+        <img :src="require('../assets/logo.png')" alt="logo" class="logo ms-4" />
       </router-link>
     </div>
     <div class="burger-menu" @click="toggleMenu" :class="{ open: isMenuOpen }">
@@ -13,46 +13,39 @@
     <div class="navbar-container" :class="{ active: isMenuOpen }">
       <ul class="navbar-links">
         <li><router-link to="/" @click="closeMenu">Accueil</router-link></li>
-
-        <!-- Dropdown Menu -->
         <li
           class="dropdown"
           @click="toggleDropdown"
           :class="{ active: showDropdown }"
         >
-          <span>
-            <router-link to="/ProductsListPage" @click="closeMenu"
-              >Produits</router-link
-            >
-          </span>
+          <router-link to="/ProductsListPage" @click="closeMenu">Produits</router-link>
           <ul v-if="showDropdown" class="dropdown-menu">
             <li v-for="item in categorie" :key="item.id">
               <router-link
-                :to="{
-                  path: '/ProductsListPage',
-                  query: { category: item.id },
-                }"
+                :to="{ path: '/ProductsListPage', query: { category: item.id } }"
                 @click="closeMenu"
-                >{{ item.name }}</router-link
-              >
+              >{{ item.name }}</router-link>
             </li>
           </ul>
         </li>
-        <li><router-link to="/admin" @click="closeMenu">Admin</router-link></li>
-        <li><router-link to="/cart" @click="closeMenu"><i class="fas fa-shopping-cart"></i> </router-link></li>
+        <li v-if="$store.state.isConnected"><router-link to="/admin" @click="closeMenu">Admin</router-link></li>
+        <li v-if="$store.state.isConnected"><router-link to="/cart" @click="closeMenu"><i class="fas fa-shopping-cart"></i></router-link></li>
+        <li v-if="$store.state.isConnected"><router-link to="/cart" @click="closeMenu"><i class="fas fa-user-circle fa-lg"></i></router-link></li>
+        <li v-else>
+          <div class="text-end me-5 mb-4">
+            <div class="d-flex align-items-center pt-4" id="logs">
+              <img :src="require('../assets/user.png')" alt="User Icon" class="icon" />
+              <router-link to="/login" class="btn btn-link" @click="closeMenu">Connexion</router-link>
+              <img :src="require('../assets/signup.png')" alt="Sign Up Icon" class="icon ms-3" />
+              <router-link to="/signup" class="btn btn-link" @click="closeMenu">Inscription</router-link>
+            </div>
+          </div>
+        </li>
       </ul>
     </div>
-    <div class="text-end me-5 mb-4">
-  <div class="d-flex align-items-center pt-4" id="logs">
-    <img src="../assets/user.png" alt="User Icon" class="icon" />
-    <a href="/login" class="btn btn-link" @click="closeMenu">Connexion</a>
-    <img src="../assets/signup.png" alt="Sign Up Icon" class="icon ms-3" />
-    <a href="/signup" class="btn btn-link" @click="closeMenu">Inscription</a>
-  </div>
-</div>
-
   </nav>
 </template>
+
 
 <script>
 import { mapGetters, mapActions } from "vuex";
@@ -73,6 +66,12 @@ export default {
     },
     toggleDropdown() {
       this.showDropdown = !this.showDropdown;
+    },
+    Logout() {
+      this.$store.commit('Logout');
+    },
+    Login(){
+      this.$store.commit('Login');
     },
     ...mapActions(["chargerCategorie"]),
   },

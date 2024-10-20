@@ -11,7 +11,9 @@ const savedUsers = JSON.parse(localStorage.getItem('users')) || [];
 const savedLoggedUsers = JSON.parse(localStorage.getItem('loggedUsers')) || [];
 
 export default new Vuex.Store({
-  state: {
+
+
+state: {
     categories: [
       { id: 1, name: 'Mobilier d\'intérieur' },
       { id: 2, name: 'Luminaires' },
@@ -86,15 +88,25 @@ export default new Vuex.Store({
     currentUser: savedLoggedUsers.length ? savedLoggedUsers[0] : null,
     utilisateurss: savedUsers,
     categorie: [],
-    orders: []
+    orders: [],
+    isConnected:false,
+    
   },
-  mutations: {
+
+mutations: {
     LOGIN(state) {
       state.isLoggedIn = true;
     },
     LOGOUT(state) {
       state.isLoggedIn = false;
     },
+    Login(state) {
+      state.isConnected = true;
+    },
+    Logout(state) {
+      state.isConnected = false;
+    },
+
     ADD_TO_CART(state, product) {
       const cartItem = state.cart.find(item => item.id === product.id);
       if (cartItem) {
@@ -108,12 +120,6 @@ export default new Vuex.Store({
     },
     CLEAR_CART(state) {
       state.cart = [];
-    },
-    UPDATE_CART_ITEM_QUANTITY(state, { id, quantity }) {
-      const item = state.cartItems.find(item => item.id === id);
-      if (item) {
-        item.quantity = quantity; // Met à jour la quantité de l'élément
-      }
     },
     ADD_USER(state, newUser) {
       state.utilisateurs.push(newUser);
@@ -130,6 +136,12 @@ export default new Vuex.Store({
     },
     SET_CART_ITEMS(state, items) {
       state.cartItems = items;
+    },
+    UPDATE_CART_ITEM_QUANTITY(state, { id, quantity }) {
+      const item = state.cartItems.find(item => item.id === id);
+      if (item) {
+        item.quantity = quantity; // Met à jour la quantité
+      }
     },
     TOGGLE_USER_ROLE(state, userId) {
       const user = state.utilisateurs.find(user => user.id === userId);
@@ -160,26 +172,39 @@ export default new Vuex.Store({
         state.categories[index] = updatedCategory;
       }
     },
+    SET_CATEGORIES(state, categories) {
+      state.categories = categories;
+    },
     REMOVE_CATEGORY(state, categoryId) {
+      state.categories = state.categories.filter(cat => cat.id !== categoryId);
+    },
+    DELETE_CATEGORY(state, categoryId) {
       state.categories = state.categories.filter(cat => cat.id !== categoryId);
     },
     ADD_ORDER(state, order) {
       state.orders.push(order);
+    },
+    MARK_ORDER_DELIVERED(state, orderId) {
+      const order = state.orders.find(order => order.id === orderId);
+      if (order) {
+        order.delivered = true;
+      }
+    },
+    setCategorie(state, items) {
+      state.categorie = items;
+    },
+    DELETE_ORDER(state, orderId) {
+      state.orders = state.orders.filter(order => order.id !== orderId);
     },
     UPDATE_ORDER_STATUS(state, { orderId, status }) {
       const order = state.orders.find(o => o.id === orderId);
       if (order) {
         order.status = status;
       }
-    },
-    DELETE_ORDER(state, orderId) {
-      state.orders = state.orders.filter(order => order.id !== orderId);
-    },
-    setCategorie(state, items) {
-      state.categorie = items;
-    }
   },
-  actions: {
+  
+},
+actions: {
     login({ commit }) {
       commit('LOGIN');
     },
@@ -284,14 +309,32 @@ export default new Vuex.Store({
     },
     deleteOrder({ commit }, orderId) {
       commit('DELETE_ORDER', orderId);
-    }
+    },
+    fetchCategories({ commit }) {
+      // Simuler la récupération des données (remplacer par un appel API réel)
+      const categories = [
+        { id: 1, name: 'Mobilier d\'intérieur' },
+        { id: 2, name: 'Luminaires' },
+        { id: 3, name: 'Tapis' },
+        { id: 4, name: 'Objets de décorations' }
+      ];
+      commit('SET_CATEGORIES', categories);
+    },
+  
+    createCategory({ commit }, category) {
+      // Simuler l'ajout d'une catégorie (remplacer par un appel API réel)
+      category.id = Date.now(); // Générer un ID temporaire
+      commit('ADD_CATEGORY', category);
+    },
+
   },
-  getters: {
+  
+
+getters: {
     produits: state => state.produits,
     totalItemsInCart(state) {
       return state.cart.reduce((sum, item) => sum + item.quantity, 0);
     },
-    
     cartItems: state => state.cart,
     cartTotalHT: state => {
       return state.cart.reduce((total, item) => total + item.prix * item.quantity, 0).toFixed(2);
@@ -303,6 +346,7 @@ export default new Vuex.Store({
     categorie: state => state.categorie,
     currentUser: state => state.currentUser,
     utilisateurs: state => state.utilisateurs,
-    allOrders: state => state.orders
+    allOrders: state => state.orders,
+    categories: (state) => state.categories,
   }
 });
