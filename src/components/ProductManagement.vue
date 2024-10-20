@@ -42,7 +42,7 @@
         <tbody>
           <tr v-for="product in products" :key="product.id">
             <td>{{ product.id }}</td>
-            <td>{{ product.nom }}</td>
+            <td>{{ product.titre }}</td>
             <td>{{ product.prix }} €</td>
             <td>{{ getCategorieName(product.categorieId) }}</td>
             <td>{{ product.moq }}</td>

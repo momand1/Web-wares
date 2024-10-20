@@ -83,10 +83,12 @@ state: {
       }
     ],
     cart: [],
+    cartItems: [],
     isLoggedIn: true,
     currentUser: savedLoggedUsers.length ? savedLoggedUsers[0] : null,
     utilisateurss: savedUsers,
-    categorie: []
+    categorie: [],
+    orders: []
   },
 
 mutations: {
@@ -179,9 +181,14 @@ mutations: {
     },
     DELETE_ORDER(state, orderId) {
       state.orders = state.orders.filter(order => order.id !== orderId);
-    }
+    },
+    UPDATE_ORDER_STATUS(state, { orderId, status }) {
+      const order = state.orders.find(o => o.id === orderId);
+      if (order) {
+        order.status = status;
+      }
   },
-
+},
 actions: {
     login({ commit }) {
       commit('LOGIN');
