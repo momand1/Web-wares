@@ -41,13 +41,20 @@ export default {
     }
   },
   methods: {
+    // Validation du champ Email ou SIRET
     validateEmailOrSiret() {
+      const siretRegex = /^[0-9]{14}$/;  // Le SIRET doit contenir exactement 14 chiffres
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;  // Format d'email basique
+
       if (this.emailOrSiret === '') {
         this.errors.emailOrSiret = 'Ce champ est obligatoire.';
+      } else if (!siretRegex.test(this.emailOrSiret) && !emailRegex.test(this.emailOrSiret)) {
+        this.errors.emailOrSiret = 'Veuillez entrer un email valide ou un SIRET de 14 chiffres.';
       } else {
         this.errors.emailOrSiret = '';
       }
     },
+    // Validation du mot de passe
     validatePassword() {
       if (this.password.length < 8) {
         this.errors.password = 'Le mot de passe doit contenir au moins 8 caractères.';
@@ -55,6 +62,7 @@ export default {
         this.errors.password = '';
       }
     },
+    // Action lors de la soumission du formulaire
     login() {
       if (!this.hasErrors) {
         const utilisateurs = JSON.parse(localStorage.getItem('utilisateurs')) || [];
@@ -145,4 +153,5 @@ button:hover {
     padding: 15px;
   }
 }
-</style> 
+</style>
+
