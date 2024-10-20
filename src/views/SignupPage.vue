@@ -3,8 +3,9 @@
     <div class="signup-container">
       <h1>Inscription</h1>
       <form @submit.prevent="registerUser">
-        <!-- Raison Sociale and SIRET on the same line -->
-        <div class="form-row">
+        
+        <!-- Ligne 1 : Raison Sociale et SIRET -->
+        <div class="form-row same-line">
           <div class="form-group">
             <label for="raisonSociale">Raison Sociale</label>
             <input v-model="raisonSociale" type="text" id="raisonSociale" required />
@@ -17,8 +18,8 @@
           </div>
         </div>
 
-        <!-- Adresse, Code Postal, and Ville on the same line -->
-        <div class="form-row">
+        <!-- Ligne 2 : Adresse, Code Postal et Ville (Sur une seule ligne) -->
+        <div class="form-row same-line">
           <div class="form-group">
             <label for="adresse">Adresse</label>
             <input v-model="adresse" type="text" id="adresse" required />
@@ -36,18 +37,21 @@
           </div>
         </div>
 
+        <!-- Ligne 3 : Email -->
         <div class="form-group">
           <label for="email">Email</label>
           <input v-model="email" type="email" id="email" @input="validateEmail" required />
           <small v-if="errors.email" class="error">{{ errors.email }}</small>
         </div>
 
+        <!-- Ligne 4 : Mot de Passe -->
         <div class="form-group">
           <label for="motDePasse">Mot de Passe</label>
           <input v-model="motDePasse" type="password" id="motDePasse" @input="validatePassword" required />
           <small v-if="errors.motDePasse" class="error">{{ errors.motDePasse }}</small>
         </div>
 
+        <!-- Ligne 5 : Confirmer le Mot de Passe -->
         <div class="form-group">
           <label for="confirmerMotDePasse">Confirmer le Mot de Passe</label>
           <input v-model="confirmerMotDePasse" type="password" id="confirmerMotDePasse" @input="validateConfirmPassword" required />
@@ -60,7 +64,6 @@
   </div>
 </template>
 
-
 <script>
 export default {
   data() {
@@ -72,13 +75,13 @@ export default {
       ville: '',
       email: '',
       motDePasse: '',
-      confirmerMotDePasse: '', // Nouveau champ pour confirmer le mot de passe
+      confirmerMotDePasse: '',
       errors: {
         siret: '',
         codePostal: '',
         email: '',
         motDePasse: '',
-        confirmerMotDePasse: '' // Nouvelle erreur potentielle
+        confirmerMotDePasse: ''
       }
     };
   },
@@ -178,60 +181,62 @@ function hashPassword(password) {
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* Form styling */
 form {
   display: flex;
   flex-direction: column;
   gap: 20px;
 }
 
-/* Flexbox row for multiple inputs */
 .form-row {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  gap: 20px;
+  flex-wrap: wrap; /* Garde les éléments ensemble mais les autorise à se replier sur une nouvelle ligne si nécessaire */
 }
 
-/* Form group for individual inputs */
-.form-group {
+.same-line {
   display: flex;
-  flex-direction: column;
-  flex: 1;
-  min-width: 150px;
+  justify-content: space-between;
+  gap: 20px;
 }
 
-/* Label and input styling */
+.same-line .form-group {
+  flex: 1;
+}
+
 label {
   margin-bottom: 8px;
+  font-weight: bold;
+  color: #333;
 }
 
 input {
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 4px;
+  width: 100%;
 }
 
-/* Button styling */
 button {
   padding: 12px;
-  background-color: #5cb85c;
+  background-color: #007BFF;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
 }
 
 button:hover {
-  background-color: #4cae4c;
+  background-color: #0056b3;
 }
 
-/* Error message styling */
 .error {
   color: red;
   font-size: 0.85rem;
 }
 
-/* Responsive adjustments for mobile */
+/* Responsive styling */
 @media (max-width: 768px) {
   .form-row {
     flex-direction: column;

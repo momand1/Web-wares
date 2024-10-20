@@ -148,13 +148,12 @@
         <p>-5 % de bienvenue*</p>
         <p>Inscrivez-vous à la newsletter et recevez toute l'actualité et les bons plans !</p>
       </div>
-      <div class="newsletter-form">
+      <div class="newsletter-form ps-1 mt-3">
         <input type="email" placeholder="Mon adresse e-mail" />
         <button>Je m'inscris</button>
       </div>
       <p class="fine-print">
-        *Désinscription possible à tout moment. Code à ajouter à votre panier ou à saisir lors de la dernière étape de la commande. Code valable 6 semaines à partir de l'inscription...
-        <a href="#">Afficher plus</a>
+        *Désinscription possible à tout moment. Code à ajouter à votre panier ou à saisir lors de la dernière étape de la commande. Code valable 6 semaines à partir de l'inscription.
       </p>
     </div>
   </div>
@@ -462,6 +461,8 @@ h1 {
     flex: 1;
     display: flex;
     min-width: 300px;
+    width: 65px;
+    height: 65px;
 }
 
 .newsletter-form input {

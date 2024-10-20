@@ -11,7 +11,9 @@ const savedUsers = JSON.parse(localStorage.getItem('users')) || [];
 const savedLoggedUsers = JSON.parse(localStorage.getItem('loggedUsers')) || [];
 
 export default new Vuex.Store({
-  state: {
+
+
+state: {
     categories: [
       { id: 1, name: 'Mobilier d\'intérieur' },
       { id: 2, name: 'Luminaires' },
@@ -81,18 +83,22 @@ export default new Vuex.Store({
       }
     ],
     cart: [],
+    cartItems: [],
     isLoggedIn: true,
     currentUser: savedLoggedUsers.length ? savedLoggedUsers[0] : null,
     utilisateurss: savedUsers,
-    categorie: []
+    categorie: [],
+    orders: []
   },
-  mutations: {
+
+mutations: {
     LOGIN(state) {
       state.isLoggedIn = true;
     },
     LOGOUT(state) {
       state.isLoggedIn = false;
     },
+
     ADD_TO_CART(state, product) {
       const cartItem = state.cart.find(item => item.id === product.id);
       if (cartItem) {
@@ -172,9 +178,18 @@ export default new Vuex.Store({
     },
     setCategorie(state, items) {
       state.categorie = items;
-    }
+    },
+    DELETE_ORDER(state, orderId) {
+      state.orders = state.orders.filter(order => order.id !== orderId);
+    },
+    UPDATE_ORDER_STATUS(state, { orderId, status }) {
+      const order = state.orders.find(o => o.id === orderId);
+      if (order) {
+        order.status = status;
+      }
   },
-  actions: {
+},
+actions: {
     login({ commit }) {
       commit('LOGIN');
     },
@@ -261,9 +276,29 @@ export default new Vuex.Store({
         { id: 4, name: 'Objets de décorations' }
       ];
       commit('setCategorie', items);
+    },
+    placeOrder({ commit, state }) {
+      const newOrder = {
+        id: Date.now(),
+        items: state.cart,
+        totalPrice: state.cart.reduce((acc, item) => acc + item.prix * item.quantity, 0),
+        date: new Date().toLocaleDateString(),
+        status: 'En attente', // Statut par défaut
+        user: state.utilisateurss.raisonSociale
+      };
+      commit('ADD_ORDER', newOrder);
+      commit('CLEAR_CART');
+    },
+    updateOrderStatus({ commit }, { orderId, status }) {
+      commit('UPDATE_ORDER_STATUS', { orderId, status });
+    },
+    deleteOrder({ commit }, orderId) {
+      commit('DELETE_ORDER', orderId);
     }
   },
-  getters: {
+  
+
+getters: {
     produits: state => state.produits,
     totalItemsInCart(state) {
       return state.cart.reduce((sum, item) => sum + item.quantity, 0);
@@ -278,6 +313,7 @@ export default new Vuex.Store({
     },
     categorie: state => state.categorie,
     currentUser: state => state.currentUser,
-    utilisateurs: state => state.utilisateurs
+    utilisateurs: state => state.utilisateurs,
+    allOrders: state => state.orders
   }
 });

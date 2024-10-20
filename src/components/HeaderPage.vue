@@ -39,7 +39,6 @@
         </li>
 
         <li><router-link to="/cart" @click="closeMenu">Panier</router-link></li>
-        <li><router-link to="/admin" @click="closeMenu">Admin</router-link></li>
       </ul>
     </div>
     <div class="text-end me-5 mb-4">
