@@ -5,11 +5,12 @@
     <table class="table table-striped" v-if="cartItems.length > 0">
       <thead class="thead-dark">
         <tr>
+          <th scope="col"></th>
           <th scope="col">Produit</th>
           <th scope="col">Quantité</th>
           <th scope="col">Prix HT</th>
-          <th scope="col">Total HT</th>
-          <th scope="col">Actions</th>
+         <th scope="col">Total HT</th>
+          <th scope="col"></th>
         </tr>
       </thead>
       <tbody>
@@ -18,11 +19,18 @@
           :key="item.id"
           :item="item"
           @remove-from-cart="removeFromCart"
+          @update-quantity="updateCartItemQuantity"
         />
       </tbody>
     </table>
 
     <div v-else class="alert alert-info">Votre panier est vide.</div>
+      
+      <!-- Estimation du délai de livraison -->
+      <p class="d-flex justify-content-between">
+        <span>Délai de livraison estimé :</span>
+        <strong>3 à 5 jours ouvrés</strong>
+      </p>
 
     <CartSummary v-if="cartItems.length > 0" :totalHT="cartTotalHT" :totalTTC="cartTotalTTC" @checkout="checkout" />
   </div>
@@ -39,17 +47,27 @@ export default {
     CartSummary
   },
   computed: {
-    ...mapGetters(['cartItems', 'cartTotalHT', 'cartTotalTTC'])
+    ...mapGetters(['cartItems','totalHT', 'cartTotalHT', 'cartTotalTTC']),
+   
   },
   methods: {
-    ...mapMutations(['REMOVE_FROM_CART']),
+    ...mapMutations(['REMOVE_FROM_CART','UPDATE_CART_ITEM_QUANTITY']),
     removeFromCart(productId) {
       this.REMOVE_FROM_CART(productId);
     },
     checkout() {
       // Logique pour passer à la caisse
       alert('Passer à la caisse');
+    },
+      updateQuantity(id, quantity) {
+      // Vérifie que la quantité est valide
+      if (quantity < 0) {
+        quantity = 0; // Empêche d'avoir des quantités négatives
+      }
+      this.$store.dispatch('updateCartItemQuantity', { id, quantity }); // Appel de l'action pour mettre à jour la quantité
     }
+  
+  
   }
 };
 </script>
@@ -109,8 +127,13 @@ button:hover {
 /* Style pour le texte "Panier vide" */
 .cart-empty {
   text-align: center;
-  color: #999;
+  color: white;
   font-size: 18px;
   margin-top: 20px;
+}
+.alert{
+  border:none;
+  color: white;
+  background-color: grey ;
 }
 </style>
